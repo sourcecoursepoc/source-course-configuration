@@ -1,84 +1,47 @@
 package com.ust.sourcecourse.configuration.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@Entity
-public class Groups {
-	@Id
-	private String uid;
-	private String name;
-	private String description;
-	private String tags;
-	private String createdBy;
-	private String created_timestamp;
-	private String modifiedBy;
-	private String modified_timestamp;
-	public String getUid() {
-		return uid;
-	}
-	public void setUid(String uid) {
-		this.uid = uid;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public String getTags() {
-		return tags;
-	}
-	public void setTags(String tags) {
-		this.tags = tags;
-	}
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	public String getCreated_timestamp() {
-		return created_timestamp;
-	}
-	public void setCreated_timestamp(String created_timestamp) {
-		this.created_timestamp = created_timestamp;
-	}
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
-	public String getModified_timestamp() {
-		return modified_timestamp;
-	}
-	public void setModified_timestamp(String modified_timestamp) {
-		this.modified_timestamp = modified_timestamp;
-	}
-	@Override
-	public String toString() {
-		return "Groups [uid=" + uid + ", name=" + name + ", description=" + description + ", tags=" + tags
-				+ ", createdBy=" + createdBy + ", created_timestamp=" + created_timestamp + ", modifiedBy=" + modifiedBy
-				+ ", modified_timestamp=" + modified_timestamp + "]";
-	}
-	public Groups(String uid, String name, String description, String tags, String createdBy, String created_timestamp,
-			String modifiedBy, String modified_timestamp) {
-		super();
-		this.uid = uid;
-		this.name = name;
-		this.description = description;
-		this.tags = tags;
-		this.createdBy = createdBy;
-		this.created_timestamp = created_timestamp;
-		this.modifiedBy = modifiedBy;
-		this.modified_timestamp = modified_timestamp;
-	}
-	
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Data; 
+@Entity 
+@Data
+@Table(name = "GroupSource") 
+public class Groups { 
+@Id 
+@Column(name = "uid") 
+@GeneratedValue(strategy = GenerationType.IDENTITY) 
+private long uid; 
+@Column(name="name") 
+private String name; 
+@Column(name="description") 
+private String description ; 
+@ElementCollection 
+private List<String> tags = new ArrayList<>();
+@Column(name = "createdBy") 
+@CreatedBy 
+private String createdBy;
+@Column(name = "created_timestamp")
+@CreationTimestamp 
+private LocalDateTime createdTimestamp;
+@Column(name = "modifiedBy") 
+@LastModifiedBy 
+private String modifiedBy; 
+@Column(name = "modified_timestamp") 
+@UpdateTimestamp
+private LocalDateTime modifiedTimestamp;
 }
+	

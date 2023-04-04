@@ -1,66 +1,52 @@
 package com.ust.sourcecourse.configuration.entity;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.xml.transform.Source;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
+@Data
+@Table(name = "Consumption")
 public class Consumption {
- @Id
-	private String uid;
-	private String column_uid;
-	private String count;
-	private String group_uids;
+	@Id
+	@Column(name = "uid")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long uid;
+	@OneToOne
+	@JoinColumn(name = "SourceColumn_uid", referencedColumnName = "uid")
+	private Source columnUid;
+	@Column(name = "count")
+	private int count;
+	@ManyToMany
+	@JoinColumn(name = "groupsource_uid", referencedColumnName = "uid")
+	private List<Groups> groupUids;
+	@Column(name = "createdBy")
+	@CreatedDate
 	private String createdBy;
-	private String created_timestamp;
+	@Column(name = "created_timestamp")
+	@CreationTimestamp
+	private LocalDateTime createdTimestamp;
+	@Column(name = "modifiedBy")
+	@LastModifiedBy
 	private String modifiedBy;
-	private String modified_timestamp;
-	public String getUid() {
-		return uid;
-	}
-	public void setUid(String uid) {
-		this.uid = uid;
-	}
-	public String getColumn_uid() {
-		return column_uid;
-	}
-	public void setColumn_uid(String column_uid) {
-		this.column_uid = column_uid;
-	}
-	public String getCount() {
-		return count;
-	}
-	public void setCount(String count) {
-		this.count = count;
-	}
-	public String getGroup_uids() {
-		return group_uids;
-	}
-	public void setGroup_uids(String group_uids) {
-		this.group_uids = group_uids;
-	}
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	public String getCreated_timestamp() {
-		return created_timestamp;
-	}
-	public void setCreated_timestamp(String created_timestamp) {
-		this.created_timestamp = created_timestamp;
-	}
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
-	public String getModified_timestamp() {
-		return modified_timestamp;
-	}
-	public void setModified_timestamp(String modified_timestamp) {
-		this.modified_timestamp = modified_timestamp;
-	}
-	
+	@Column(name = "modified_timestamp")
+	@UpdateTimestamp
+	private LocalDateTime modifiedTimestamp;
 }
