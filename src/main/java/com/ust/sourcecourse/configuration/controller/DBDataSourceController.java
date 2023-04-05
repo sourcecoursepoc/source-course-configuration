@@ -1,6 +1,7 @@
 package com.ust.sourcecourse.configuration.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,7 @@ public class DBDataSourceController {
 
 	@PostMapping
 	public ResponseEntity<DBDataSourceInfo> saveDB(@Valid @RequestBody DBInfo dbInfo) {
-		return ResponseEntity.ok(dataSourceService.saveDB(dbInfo));
+		return ResponseEntity.status(HttpStatus.CREATED.value()).body(dataSourceService.saveDB(dbInfo));
 	}
 
 }
