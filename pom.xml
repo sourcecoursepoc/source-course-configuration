@@ -54,8 +54,7 @@
 		</dependency>
 		<dependency>    
             <groupId>org.springframework.boot</groupId>    
-            <artifactId>spring-boot-starter-data-jpa</artifactId>    
-            <version>2.2.2.RELEASE</version>    
+            <artifactId>spring-boot-starter-data-jpa</artifactId>        
        </dependency>
        <dependency>
 			<groupId>org.springdoc</groupId>
@@ -143,5 +142,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
