@@ -27,8 +27,8 @@ public class DBDataSourceController {
 	private DBDataSourceService dataSourceService;
 
 	@PostMapping
-	public ResponseEntity<DBDataSourceInfo> saveDB(@Valid @RequestBody DBData dbInfo) {
-		return ResponseEntity.status(HttpStatus.CREATED.value()).body(dataSourceService.saveDB(dbInfo));
+	public ResponseEntity<DBDataSourceInfo> saveDB(@Valid @RequestBody DBData dbData) {
+		return ResponseEntity.status(HttpStatus.CREATED.value()).body(dataSourceService.saveDB(dbData));
 	}
 
 	@DeleteMapping("/{uid}")

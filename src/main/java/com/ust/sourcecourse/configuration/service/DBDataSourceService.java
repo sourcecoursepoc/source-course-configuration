@@ -27,10 +27,10 @@ public class DBDataSourceService {
 	private DataSourceRepository dataSourceRepository;
 
 	@Transactional
-	public DBDataSourceInfo saveDB(DBData dbInfo) {
-		ConnectionInfo connectionInfo = ConnectionInfo.builder().connectionURL(dbInfo.getConnectionURL())
-				.username(dbInfo.getUsername()).password(dbInfo.getPassword()).build();
-		DataSource dataSource = DataSource.builder().name(dbInfo.getName()).description(dbInfo.getDescription())
+	public DBDataSourceInfo saveDB(DBData dbData) {
+		ConnectionInfo connectionInfo = ConnectionInfo.builder().connectionURL(dbData.getConnectionURL())
+				.username(dbData.getUsername()).password(dbData.getPassword()).build();
+		DataSource dataSource = DataSource.builder().name(dbData.getName()).description(dbData.getDescription())
 				.connectionInfo(connectionInfo).build();
 		connectionInfo.setDataSource(dataSource);
 		dataSource = dataSourceRepository.save(dataSource);
