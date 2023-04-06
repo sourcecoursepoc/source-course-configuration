@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,8 +39,19 @@ public class DBDataSourceController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<DBDataSourceInfo>> getDBSourceInfo() {
-		return ResponseEntity.ok(dataSourceService.getDBInfo());
+	public ResponseEntity<List<DBDataSourceInfo>> getAllDBSourceInfo() {
+		return ResponseEntity.ok(dataSourceService.getAllDBInfo());
+	}
+
+	@GetMapping("/{uid}")
+	public ResponseEntity<DBDataSourceInfo> getDBSourceInfo(@PathVariable Long uid) {
+		return ResponseEntity.ok(dataSourceService.getDBInfo(uid));
+	}
+
+	@PutMapping("/{uid}")
+	public ResponseEntity<DBDataSourceInfo> updateDBSourceInfo(@PathVariable Long uid,
+			@Valid @RequestBody DBData dbData) {
+		return ResponseEntity.ok(dataSourceService.updateDB(uid, dbData));
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.ust.sourcecourse.configuration.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,11 +29,29 @@ public class DBDataSourceService {
 
 	@Transactional
 	public DBDataSourceInfo saveDB(DBData dbData) {
-		ConnectionInfo connectionInfo = ConnectionInfo.builder().connectionURL(dbData.getConnectionURL())
-				.username(dbData.getUsername()).password(dbData.getPassword()).build();
+		ConnectionInfo connectionInfo = getConnectionInfo(dbData);
 		DataSource dataSource = DataSource.builder().name(dbData.getName()).description(dbData.getDescription())
 				.connectionInfo(connectionInfo).build();
 		connectionInfo.setDataSource(dataSource);
+		dataSource = dataSourceRepository.save(dataSource);
+		return getDBDataSource(dataSource);
+	}
+
+	private ConnectionInfo getConnectionInfo(DBData dbData) {
+		ConnectionInfo connectionInfo = ConnectionInfo.builder().connectionURL(dbData.getConnectionURL())
+				.username(dbData.getUsername()).password(dbData.getPassword()).build();
+		return connectionInfo;
+	}
+
+	public DBDataSourceInfo updateDB(Long uid, DBData dbData) {
+		Optional<DataSource> ds = dataSourceRepository.findById(uid);
+		DataSource dataSource = ds.orElseThrow();
+		dataSource.setName(dbData.getName());
+		dataSource.setDescription(dbData.getDescription());
+		ConnectionInfo connectionInfo = dataSource.getConnectionInfo();
+		connectionInfo.setConnectionURL(dbData.getConnectionURL());
+		connectionInfo.setUsername(dbData.getUsername());
+		connectionInfo.setPassword(dbData.getPassword());
 		dataSource = dataSourceRepository.save(dataSource);
 		return getDBDataSource(dataSource);
 	}
@@ -41,9 +60,15 @@ public class DBDataSourceService {
 		dataSourceRepository.deleteById(uid);
 	}
 
-	public List<DBDataSourceInfo> getDBInfo() {
+	public List<DBDataSourceInfo> getAllDBInfo() {
 		List<DataSource> dataSources = dataSourceRepository.findAll();
 		return dataSources.stream().map(dataSource -> getDBDataSourceInfo(dataSource)).toList();
+	}
+
+	public DBDataSourceInfo getDBInfo(Long uid) {
+		Optional<DataSource> ds = dataSourceRepository.findById(uid);
+		DataSource dataSource = ds.orElseThrow();
+		return getDBDataSourceInfo(dataSource);
 	}
 
 	private DBDataSourceInfo getDBDataSource(DataSource dataSource) {
