@@ -7,11 +7,11 @@ import lombok.Data;
 
 @Data
 @Builder
-public class DBDataSourceInfo {
+public class DBTableColumn {
 
 	private Long uid;
-	private String dbName;
+	private String name;
 	private String description;
-	private DBMetadata metadata;
-	private List<DBTable> tables;
+	private DBTableColumnMetadata metadata;
+	private List<String> tags;
 }
