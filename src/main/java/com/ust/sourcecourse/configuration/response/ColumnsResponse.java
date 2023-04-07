@@ -1,11 +1,6 @@
-package com.ust.sourcecourse.configuration.entity;
+package com.ust.sourcecourse.configuration.response;
 
-import java.net.URI;
-
-import org.springframework.web.util.UriComponentsBuilder;
-
-public class SourcePocEntity {
-	
+public class ColumnsResponse {
 	private String name;
 	private String notes;
 	private String type;
@@ -56,8 +51,8 @@ public class SourcePocEntity {
 	public long getDbid() {
 		return dbid;
 	}
-	public void setDbid(long id) {
-		this.dbid = id;
+	public void setDbid(long dbid) {
+		this.dbid = dbid;
 	}
 	public String getTableid() {
 		return tableid;
@@ -85,20 +80,25 @@ public class SourcePocEntity {
 	}
 	@Override
 	public String toString() {
-		return "SourcePocEntity [name=" + name + ", notes=" + notes + ", type=" + type + ", isprimary=" + isprimary
+		return "ColumnsResponse [name=" + name + ", notes=" + notes + ", type=" + type + ", isprimary=" + isprimary
 				+ ", prefix=" + prefix + ", sufix=" + sufix + ", dbid=" + dbid + ", tableid=" + tableid + ", Columnid="
-				+ Columnid + ", Cumulative=" + Cumulative + ", Size=" + Size + ", getName()=" + getName()
-				+ ", getNotes()=" + getNotes() + ", getType()=" + getType() + ", isIsprimary()=" + isIsprimary()
-				+ ", getPrefix()=" + getPrefix() + ", getSufix()=" + getSufix() + ", getDbid()=" + getDbid()
-				+ ", getTableid()=" + getTableid() + ", getColumnid()=" + getColumnid() + ", getCumulative()="
-				+ getCumulative() + ", getSize()=" + getSize() + ", getClass()=" + getClass() + ", hashCode()="
-				+ hashCode() + ", toString()=" + super.toString() + "]";
+				+ Columnid + ", Cumulative=" + Cumulative + ", Size=" + Size + "]";
 	}
-	public static UriComponentsBuilder created(URI location) {
-		// TODO Auto-generated method stub
-		return null;
+	public ColumnsResponse(String name, String notes, String type, boolean isprimary, String prefix, String sufix,
+			long dbid, String tableid, String columnid, String cumulative, String size) {
+		super();
+		this.name = name;
+		this.notes = notes;
+		this.type = type;
+		this.isprimary = isprimary;
+		this.prefix = prefix;
+		this.sufix = sufix;
+		this.dbid = dbid;
+		this.tableid = tableid;
+		Columnid = columnid;
+		Cumulative = cumulative;
+		Size = size;
 	}
-	
 	
 
 }

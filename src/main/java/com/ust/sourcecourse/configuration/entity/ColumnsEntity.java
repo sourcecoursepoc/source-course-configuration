@@ -4,8 +4,7 @@ import java.net.URI;
 
 import org.springframework.web.util.UriComponentsBuilder;
 
-public class SourcePocEntity {
-	
+public class ColumnsEntity {
 	private String name;
 	private String notes;
 	private String type;
@@ -102,3 +101,6 @@ public class SourcePocEntity {
 	
 
 }
+
+
+
