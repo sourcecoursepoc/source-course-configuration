@@ -19,21 +19,17 @@ public class SourceTableService {
 	private SourceTableRepository sourcetablerepo;
 	private DataSourceRepository dataSourceRepository;
 
-	
-	public SourceTableResponse createSourceTable(SourceTableRequest tableRequest) {
+	public SourceTableResponse createProjectTable(SourceTableRequest tableRequest) {
 
-		/*
-		 * Optional<DataSource> optionalDataSource =
-		 * dataSourceRepository.findById(tableRequest.getDataSourceUid()); DataSource
-		 * dataSource = optionalDataSource.get();
-		 */
+		Optional<DataSource> optionalDataSource = dataSourceRepository.findById(tableRequest.getDataSourceUid());
+		DataSource dataSource = optionalDataSource.get();
+
 		SourceTable project = SourceTable.builder().name(tableRequest.getName())
 				.description(tableRequest.getDescription())
-				//.dataSource(dataSource)
-				.rowCount(tableRequest.getRowCount())
-				.size(tableRequest.getSize()).minDate(tableRequest.getMinDate()).maxDate(tableRequest.getMaxDate())
-				.yoyCount(tableRequest.getYoyCount()).momCount(tableRequest.getMomCount()).tags(tableRequest.getTags())
-				.build();
+				.dataSource(dataSource)
+				.rowCount(tableRequest.getRowCount()).size(tableRequest.getSize()).minDate(tableRequest.getMinDate())
+				.maxDate(tableRequest.getMaxDate()).yoyCount(tableRequest.getYoyCount())
+				.momCount(tableRequest.getMomCount()).tags(tableRequest.getTags()).build();
 		project = sourcetablerepo.save(project);
 		return SourceTableResponse.builder().uid(project.getUid()).name(project.getName())
 				.description(project.getDescription()).rowCount(project.getRowCount()).size(project.getSize())
@@ -41,7 +37,6 @@ public class SourceTableService {
 				.momCount(project.getMomCount()).tags(project.getTags()).build();
 	}
 
-	
 	public boolean deleteSourceTable(Long id) {
 		Optional<SourceTable> existingTable = sourcetablerepo.findById(id);
 		if (existingTable.isPresent()) {
@@ -53,13 +48,9 @@ public class SourceTableService {
 
 	}
 
-	
-
 	public Optional<SourceTable> getSourceTableById(Long id) {
 		return sourcetablerepo.findById(id);
 	}
-
-	
 
 	public Optional<SourceTable> updateSourceTable(Long id, SourceTable sourceTable) {
 		Optional<SourceTable> existingTable = sourcetablerepo.findById(id);

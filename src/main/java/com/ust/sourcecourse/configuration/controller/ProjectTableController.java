@@ -22,26 +22,19 @@ import com.ust.sourcecourse.configuration.service.SourceTableService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/source-tables")
-public class SourceTableController {
+@RequestMapping("/project-tables")
+public class ProjectTableController {
 
 	
 	@Autowired
 	private SourceTableService sourceTableService;
 	
 	@PostMapping
-	public ResponseEntity<SourceTableResponse> createSourceTable(@Valid @RequestBody SourceTableRequest tableRequest) {
-		SourceTableResponse tableResponse = sourceTableService.createSourceTable(tableRequest);
+	public ResponseEntity<SourceTableResponse> createProjectTable(@Valid @RequestBody SourceTableRequest tableRequest) {
+		SourceTableResponse tableResponse = sourceTableService.createProjectTable(tableRequest);
 		return ResponseEntity.status(HttpStatus.CREATED.value()).body(tableResponse);
 	}
 
-	/*
-	 * @PostMapping public ResponseEntity<SourceTable>
-	 * createSourceTable(@RequestBody SourceTableRequest sourceTableReq) {
-	 * SourceTable savedSourceTable =
-	 * sourceTableService.createSourceTable(sourceTableReq); return new
-	 * ResponseEntity<>(savedSourceTable, HttpStatus.CREATED); }
-	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<Optional<SourceTable>> getSourceTableById(@PathVariable Long id) {
 		Optional<SourceTable> sourceTable = sourceTableService.getSourceTableById(id);
