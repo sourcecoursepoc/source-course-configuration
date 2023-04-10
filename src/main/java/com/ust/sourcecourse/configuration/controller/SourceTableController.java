@@ -22,7 +22,7 @@ import com.ust.sourcecourse.configuration.service.SourceTableService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/source-tables")
+@RequestMapping("/source-tables")
 public class SourceTableController {
 
 	

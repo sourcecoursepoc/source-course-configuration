@@ -5,7 +5,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ust.sourcecourse.configuration.entity.DataSource;
 import com.ust.sourcecourse.configuration.entity.SourceTable;
+import com.ust.sourcecourse.configuration.repository.DataSourceRepository;
 import com.ust.sourcecourse.configuration.repository.SourceTableRepository;
 import com.ust.sourcecourse.configuration.request.SourceTableRequest;
 import com.ust.sourcecourse.configuration.response.SourceTableResponse;
@@ -15,26 +17,31 @@ public class SourceTableService {
 
 	@Autowired
 	private SourceTableRepository sourcetablerepo;
+	private DataSourceRepository dataSourceRepository;
 
-	/**
-	 * 
-	 * 
-	 * @param tableRequest
-	 * @return
-	 */
+	
 	public SourceTableResponse createSourceTable(SourceTableRequest tableRequest) {
+
+		/*
+		 * Optional<DataSource> optionalDataSource =
+		 * dataSourceRepository.findById(tableRequest.getDataSourceUid()); DataSource
+		 * dataSource = optionalDataSource.get();
+		 */
 		SourceTable project = SourceTable.builder().name(tableRequest.getName())
-				.description(tableRequest.getDescription()).build();
+				.description(tableRequest.getDescription())
+				//.dataSource(dataSource)
+				.rowCount(tableRequest.getRowCount())
+				.size(tableRequest.getSize()).minDate(tableRequest.getMinDate()).maxDate(tableRequest.getMaxDate())
+				.yoyCount(tableRequest.getYoyCount()).momCount(tableRequest.getMomCount()).tags(tableRequest.getTags())
+				.build();
 		project = sourcetablerepo.save(project);
 		return SourceTableResponse.builder().uid(project.getUid()).name(project.getName())
-				.description(project.getDescription()).build();
+				.description(project.getDescription()).rowCount(project.getRowCount()).size(project.getSize())
+				.minDate(project.getMinDate()).maxDate(project.getMaxDate()).yoyCount(project.getYoyCount())
+				.momCount(project.getMomCount()).tags(project.getTags()).build();
 	}
 
-	/**
-	 * 
-	 * @param id
-	 * @return
-	 */
+	
 	public boolean deleteSourceTable(Long id) {
 		Optional<SourceTable> existingTable = sourcetablerepo.findById(id);
 		if (existingTable.isPresent()) {
@@ -46,22 +53,13 @@ public class SourceTableService {
 
 	}
 
-	/**
-	 * 
-	 * @param id
-	 * @return
-	 */
+	
 
 	public Optional<SourceTable> getSourceTableById(Long id) {
 		return sourcetablerepo.findById(id);
 	}
 
-	/**
-	 * 
-	 * @param id
-	 * @param sourceTable
-	 * @return
-	 */
+	
 
 	public Optional<SourceTable> updateSourceTable(Long id, SourceTable sourceTable) {
 		Optional<SourceTable> existingTable = sourcetablerepo.findById(id);
