@@ -1,6 +1,7 @@
 package com.ust.sourcecourse.configuration.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -52,5 +53,19 @@ public class ProjectTable {
 	@Column(name = "modified_timestamp")
 	@UpdateTimestamp
 	private LocalDateTime modifiedTimestamp;
+
+	public ProjectTable() {
+	}
+
+	public ProjectTable(Long uid, Project project, SourceTable sourceTable, String createdBy,
+			LocalDateTime createdTimestamp, String modifiedBy, LocalDateTime modifiedTimestamp) {
+		this.uid = uid;
+		this.project = project;
+		this.sourceTable = sourceTable;
+		this.createdBy = createdBy;
+		this.createdTimestamp = createdTimestamp;
+		this.modifiedBy = modifiedBy;
+		this.modifiedTimestamp = modifiedTimestamp;
+	}
 
 }

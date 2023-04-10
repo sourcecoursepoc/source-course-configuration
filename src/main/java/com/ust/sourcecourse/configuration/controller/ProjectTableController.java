@@ -1,5 +1,7 @@
+
 package com.ust.sourcecourse.configuration.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,44 +16,49 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ust.sourcecourse.configuration.entity.ProjectTable;
 import com.ust.sourcecourse.configuration.entity.SourceTable;
+import com.ust.sourcecourse.configuration.request.ProjectTableRequest;
 import com.ust.sourcecourse.configuration.request.SourceTableRequest;
+import com.ust.sourcecourse.configuration.response.ProjectTableResponse;
 import com.ust.sourcecourse.configuration.response.SourceTableResponse;
+import com.ust.sourcecourse.configuration.service.ProjectTableService;
 import com.ust.sourcecourse.configuration.service.SourceTableService;
 
 import jakarta.validation.Valid;
 
 @RestController
+
 @RequestMapping("/project-tables")
 public class ProjectTableController {
 
-	
 	@Autowired
-	private SourceTableService sourceTableService;
-	
+	private ProjectTableService projectTableService;
+
 	@PostMapping
-	public ResponseEntity<SourceTableResponse> createProjectTable(@Valid @RequestBody SourceTableRequest tableRequest) {
-		SourceTableResponse tableResponse = sourceTableService.createProjectTable(tableRequest);
-		return ResponseEntity.status(HttpStatus.CREATED.value()).body(tableResponse);
+	public ResponseEntity<List<ProjectTableResponse>> createProjectTable(
+			@Valid @RequestBody ProjectTableRequest ProjTableReq) {
+		List<ProjectTableResponse>projectTableResponse = projectTableService.createProjectTable(ProjTableReq);
+		return ResponseEntity.status(HttpStatus.CREATED.value()).body(projectTableResponse);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Optional<SourceTable>> getSourceTableById(@PathVariable Long id) {
-		Optional<SourceTable> sourceTable = sourceTableService.getSourceTableById(id);
-		return new ResponseEntity<>(sourceTable, HttpStatus.OK);
+	public ResponseEntity<Optional<ProjectTable>> getProjectTable(@PathVariable Long id) {
+		Optional<ProjectTable> sourceTable = projectTableService.getProjectTable(id);
+		return ResponseEntity.ok(sourceTable);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Optional<SourceTable>> updateSourceTable(@PathVariable Long id,
-			@RequestBody SourceTable sourceTable) {
-		Optional<SourceTable> updatedSourceTable = sourceTableService.updateSourceTable(id, sourceTable);
-		return new ResponseEntity<>(updatedSourceTable, HttpStatus.OK);
+	public ResponseEntity<Optional<ProjectTable>> updateProjectTable(@PathVariable Long id,
+			@RequestBody ProjectTable projectTable) {
+		Optional<ProjectTable> updatedSourceTable = projectTableService.updateProjectTable(id, projectTable);
+		return ResponseEntity.ok(updatedSourceTable);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteSourceTable(@PathVariable("id") Long id) {
-		sourceTableService.deleteSourceTable(id);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	public ResponseEntity<ProjectTable> deleteProjectTable(@PathVariable("id") Long id) {
+		projectTableService.deleteSourceTable(id);
+		 return ResponseEntity.noContent().build();
 	}
 
 }

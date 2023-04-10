@@ -12,30 +12,14 @@ import com.ust.sourcecourse.configuration.repository.SourceTableRepository;
 import com.ust.sourcecourse.configuration.request.SourceTableRequest;
 import com.ust.sourcecourse.configuration.response.SourceTableResponse;
 
+import jakarta.validation.Valid;
+
 @Service
 public class SourceTableService {
 
 	@Autowired
 	private SourceTableRepository sourcetablerepo;
-	private DataSourceRepository dataSourceRepository;
-
-	public SourceTableResponse createProjectTable(SourceTableRequest tableRequest) {
-
-		Optional<DataSource> optionalDataSource = dataSourceRepository.findById(tableRequest.getDataSourceUid());
-		DataSource dataSource = optionalDataSource.get();
-
-		SourceTable project = SourceTable.builder().name(tableRequest.getName())
-				.description(tableRequest.getDescription())
-				.dataSource(dataSource)
-				.rowCount(tableRequest.getRowCount()).size(tableRequest.getSize()).minDate(tableRequest.getMinDate())
-				.maxDate(tableRequest.getMaxDate()).yoyCount(tableRequest.getYoyCount())
-				.momCount(tableRequest.getMomCount()).tags(tableRequest.getTags()).build();
-		project = sourcetablerepo.save(project);
-		return SourceTableResponse.builder().uid(project.getUid()).name(project.getName())
-				.description(project.getDescription()).rowCount(project.getRowCount()).size(project.getSize())
-				.minDate(project.getMinDate()).maxDate(project.getMaxDate()).yoyCount(project.getYoyCount())
-				.momCount(project.getMomCount()).tags(project.getTags()).build();
-	}
+		
 
 	public boolean deleteSourceTable(Long id) {
 		Optional<SourceTable> existingTable = sourcetablerepo.findById(id);
@@ -63,4 +47,5 @@ public class SourceTableService {
 
 	}
 
+	
 }
