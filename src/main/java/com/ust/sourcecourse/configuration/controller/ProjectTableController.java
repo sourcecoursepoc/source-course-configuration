@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ust.sourcecourse.configuration.entity.ProjectTable;
 import com.ust.sourcecourse.configuration.request.ProjectTableRequest;
-import com.ust.sourcecourse.configuration.response.ProjectTableResponse;
+import com.ust.sourcecourse.configuration.response.ProjectInfo;
+
 import com.ust.sourcecourse.configuration.service.ProjectTableService;
 import jakarta.validation.Valid;
 
@@ -29,22 +30,25 @@ public class ProjectTableController {
 	private ProjectTableService projectTableService;
 
 	@PostMapping
-	public ResponseEntity<List<ProjectTableResponse>> createProjectTable(
-			@Valid @RequestBody ProjectTableRequest ProjTableReq) {
-		List<ProjectTableResponse> projectTableResponse = projectTableService.createProjectTable(ProjTableReq);
+	public ResponseEntity<List<ProjectInfo>> createProjectTable(@Valid @RequestBody ProjectTableRequest ProjTableReq) {
+		List<ProjectInfo> projectTableResponse = projectTableService.createProjectTable(ProjTableReq);
 		return ResponseEntity.status(HttpStatus.CREATED.value()).body(projectTableResponse);
 	}
-
+	
+	
 	@GetMapping("/{id}")
-	public ResponseEntity<Optional<ProjectTable>> getProjectTable(@PathVariable Long id) {
-		Optional<ProjectTable> sourceTable = projectTableService.getProjectTable(id);
-		return ResponseEntity.ok(sourceTable);
+	public ResponseEntity<ProjectInfo> getProjectTable(@PathVariable Long id) {
+		ProjectInfo projInfo = projectTableService.getProjectTable(id);
+		return ResponseEntity.ok(projInfo);
 	}
 
+	
+	
+	
 	@PutMapping("/{id}")
-	public ResponseEntity<Optional<ProjectTable>> updateProjectTable(@PathVariable Long id,
+	public ResponseEntity<ProjectInfo> updateProjectTable(@PathVariable Long id,
 			@RequestBody ProjectTable projectTable) {
-		Optional<ProjectTable> updatedSourceTable = projectTableService.updateProjectTable(id, projectTable);
+		ProjectInfo updatedSourceTable = projectTableService.updateProjectTable(id, projectTable);
 		return ResponseEntity.ok(updatedSourceTable);
 	}
 
