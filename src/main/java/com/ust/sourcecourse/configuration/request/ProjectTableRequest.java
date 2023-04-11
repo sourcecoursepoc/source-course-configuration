@@ -11,7 +11,4 @@ public class ProjectTableRequest {
 
 	private Long projectUid;
 	private List<Long> sourceTableUids;
-	private String createdBy;
-	private String modifiedBy;
-
 }
