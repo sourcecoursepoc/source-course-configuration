@@ -1,5 +1,7 @@
 package com.ust.sourcecourse.configuration.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,4 +23,11 @@ public class ProjectService {
 		return ProjectInfo.builder().uid(project.getUid()).name(project.getName()).description(project.getDescription())
 				.build();
 	}
+
+	public List<Project> getAllProjects() {
+		  List<Project> projects = projectRepository.findAll();
+		return projects;
+	}
+
+	
 }
