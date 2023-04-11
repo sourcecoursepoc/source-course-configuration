@@ -1,9 +1,11 @@
 package com.ust.sourcecourse.configuration.service;
 
+
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,7 @@ public class ProjectService {
 				.build();
 	}
 
+
 	
 
 	public Optional<Project> getProjectById(Long uid) {
@@ -38,4 +41,5 @@ public class ProjectService {
 	public void deleteProject(Long uid) {
 		projectRepository.deleteById(uid);
 	}
+
 }
