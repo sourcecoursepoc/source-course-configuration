@@ -1,8 +1,8 @@
+
 package com.ust.sourcecourse.configuration.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,8 +27,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @Table(name = "source_table")
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
