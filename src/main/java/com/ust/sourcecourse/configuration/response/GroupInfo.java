@@ -1,5 +1,7 @@
 package com.ust.sourcecourse.configuration.response;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -12,11 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DBTableColumnMetadata {
+public class GroupInfo {
 
-	private String type;
-	private boolean isPrimary;
-	private boolean isUnique;
-	private boolean isNullable;
-	private String defaultValue;
+	private Long uid;
+	private String name;
+	private String description;
+	private List<String> tags;
+	private List<ColumnInfo> columnInfos;
+	private PipelineInfo pipeline;
 }

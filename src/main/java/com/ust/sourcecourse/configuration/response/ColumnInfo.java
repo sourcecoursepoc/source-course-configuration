@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DBTableColumnMetadata {
+public class ColumnInfo {
 
-	private String type;
-	private boolean isPrimary;
-	private boolean isUnique;
-	private boolean isNullable;
-	private String defaultValue;
+	private Long uid;
+	
+	private AttributesInfo attributesInfo;
+
+	private DBTableColumn sourceColumn;
 }

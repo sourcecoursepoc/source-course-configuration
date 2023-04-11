@@ -6,4 +6,5 @@ import com.ust.sourcecourse.configuration.entity.GroupPipeline;
 
 public interface GroupPiplelineRepository extends JpaRepository<GroupPipeline, Long> {
 
+	GroupPipeline findByProjectGroupUid(Long projectGroupUid);
 }

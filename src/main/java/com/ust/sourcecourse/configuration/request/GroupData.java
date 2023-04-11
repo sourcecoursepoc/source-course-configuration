@@ -6,13 +6,17 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class ProjectData {
+public class GroupData {
 
 	@NotBlank
 	private String name;
 
 	@NotBlank
 	private String description;
+
+	private List<String> tags;
 	
-	private List<Long> tables;
+	private List<ColumnData> columns;
+	
+	private PipelineData pipeline;
 }
