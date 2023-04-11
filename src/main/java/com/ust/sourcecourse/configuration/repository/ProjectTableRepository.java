@@ -9,7 +9,4 @@ import com.ust.sourcecourse.configuration.entity.SourceTable;
 @Repository
 public interface ProjectTableRepository extends JpaRepository<ProjectTable, Long>{
 
-	SourceTable save(SourceTable project);
-	
-
 }

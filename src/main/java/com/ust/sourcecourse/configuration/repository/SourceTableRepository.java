@@ -9,7 +9,6 @@ import com.ust.sourcecourse.configuration.request.SourceTableRequest;
 
 public interface SourceTableRepository extends JpaRepository<SourceTable, Long> {
 
-	SourceTable save(SourceTableRequest tableRequest);
 
 	List<SourceTable> findByUidIn(List<Long> sourceTableUids);
 

@@ -5,26 +5,19 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import com.ust.sourcecourse.configuration.entity.DataSource;
 import com.ust.sourcecourse.configuration.entity.Project;
 import com.ust.sourcecourse.configuration.entity.ProjectTable;
 import com.ust.sourcecourse.configuration.entity.SourceTable;
-import com.ust.sourcecourse.configuration.repository.DataSourceRepository;
+
 import com.ust.sourcecourse.configuration.repository.ProjectRepository;
 import com.ust.sourcecourse.configuration.repository.ProjectTableRepository;
 import com.ust.sourcecourse.configuration.repository.SourceTableRepository;
 import com.ust.sourcecourse.configuration.request.ProjectTableRequest;
-import com.ust.sourcecourse.configuration.request.SourceTableRequest;
-import com.ust.sourcecourse.configuration.response.ProjectResponse;
+
 import com.ust.sourcecourse.configuration.response.ProjectTableResponse;
-import com.ust.sourcecourse.configuration.response.SourceTableResponse;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 
 @Service
 public class ProjectTableService {
@@ -35,6 +28,12 @@ public class ProjectTableService {
 	private ProjectRepository projectRepository;
 	@Autowired
 	private SourceTableRepository sourceTableRepository;
+
+	/**
+	 * 
+	 * @param projTableReq
+	 * @return
+	 */
 
 	public List<ProjectTableResponse> createProjectTable(ProjectTableRequest projTableReq) {
 
@@ -53,6 +52,7 @@ public class ProjectTableService {
 
 		List<ProjectTableResponse> projectTableResponses = new ArrayList<>();
 		for (ProjectTable projectTable : projectTables) {
+
 			ProjectTableResponse projectTableResponse = ProjectTableResponse.builder().uid(projectTable.getUid())
 					.createdBy(projectTable.getCreatedBy()).createdTimestamp(projectTable.getCreatedTimestamp())
 					.modifiedBy(projectTable.getModifiedBy()).modifiedTimestamp(projectTable.getModifiedTimestamp())
@@ -63,8 +63,6 @@ public class ProjectTableService {
 		return projectTableResponses;
 	}
 
-	
-	
 	public Optional<ProjectTable> getProjectTable(Long id) {
 		return projectTableRepository.findById(id);
 	}

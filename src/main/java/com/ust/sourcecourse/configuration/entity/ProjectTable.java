@@ -16,13 +16,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @Table(name = "project_table")
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProjectTable {
 
 	@Id
@@ -53,19 +57,5 @@ public class ProjectTable {
 	@Column(name = "modified_timestamp")
 	@UpdateTimestamp
 	private LocalDateTime modifiedTimestamp;
-
-	public ProjectTable() {
-	}
-
-	public ProjectTable(Long uid, Project project, SourceTable sourceTable, String createdBy,
-			LocalDateTime createdTimestamp, String modifiedBy, LocalDateTime modifiedTimestamp) {
-		this.uid = uid;
-		this.project = project;
-		this.sourceTable = sourceTable;
-		this.createdBy = createdBy;
-		this.createdTimestamp = createdTimestamp;
-		this.modifiedBy = modifiedBy;
-		this.modifiedTimestamp = modifiedTimestamp;
-	}
 
 }

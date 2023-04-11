@@ -3,7 +3,6 @@ package com.ust.sourcecourse.configuration.controller;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +14,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.ust.sourcecourse.configuration.entity.ProjectTable;
-import com.ust.sourcecourse.configuration.entity.SourceTable;
 import com.ust.sourcecourse.configuration.request.ProjectTableRequest;
-import com.ust.sourcecourse.configuration.request.SourceTableRequest;
 import com.ust.sourcecourse.configuration.response.ProjectTableResponse;
-import com.ust.sourcecourse.configuration.response.SourceTableResponse;
 import com.ust.sourcecourse.configuration.service.ProjectTableService;
-import com.ust.sourcecourse.configuration.service.SourceTableService;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -38,7 +31,7 @@ public class ProjectTableController {
 	@PostMapping
 	public ResponseEntity<List<ProjectTableResponse>> createProjectTable(
 			@Valid @RequestBody ProjectTableRequest ProjTableReq) {
-		List<ProjectTableResponse>projectTableResponse = projectTableService.createProjectTable(ProjTableReq);
+		List<ProjectTableResponse> projectTableResponse = projectTableService.createProjectTable(ProjTableReq);
 		return ResponseEntity.status(HttpStatus.CREATED.value()).body(projectTableResponse);
 	}
 
@@ -58,7 +51,7 @@ public class ProjectTableController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ProjectTable> deleteProjectTable(@PathVariable("id") Long id) {
 		projectTableService.deleteSourceTable(id);
-		 return ResponseEntity.noContent().build();
+		return ResponseEntity.noContent().build();
 	}
 
 }
