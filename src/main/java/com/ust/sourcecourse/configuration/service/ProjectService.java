@@ -1,6 +1,12 @@
 package com.ust.sourcecourse.configuration.service;
 
+
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
+
 import org.springframework.stereotype.Service;
 
 import com.ust.sourcecourse.configuration.entity.Project;
@@ -21,4 +27,19 @@ public class ProjectService {
 		return ProjectInfo.builder().uid(project.getUid()).name(project.getName()).description(project.getDescription())
 				.build();
 	}
+
+
+	
+
+	public Optional<Project> getProjectById(Long uid) {
+		// TODO Auto-generated method stub
+		return projectRepository.findById(uid);
+	}
+
+
+
+	public void deleteProject(Long uid) {
+		projectRepository.deleteById(uid);
+	}
+
 }
