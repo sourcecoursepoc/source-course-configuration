@@ -1,5 +1,7 @@
 package com.ust.sourcecourse.configuration.response;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,9 +10,8 @@ import lombok.Data;
 public class DBDataSourceInfo {
 
 	private Long uid;
-
-	private String name;
-
+	private String dbName;
 	private String description;
-
+	private DBMetadata metadata;
+	private List<DBTable> tables;
 }
