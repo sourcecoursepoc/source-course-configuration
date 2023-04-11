@@ -4,21 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class DBInfo {
+public class ProjectData {
 
 	@NotBlank
 	private String name;
-	
+
 	@NotBlank
 	private String description;
-
-	@NotBlank
-	private String connectionURL;
-
-	@NotBlank
-	private String username;
-
-	@NotBlank
-	private String password;
-
 }
