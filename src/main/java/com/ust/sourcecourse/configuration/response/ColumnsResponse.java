@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 @Builder
 public class ColumnsResponse {
+	private Long uid;
 	private String name;
 	private String notes;
 	private String type;

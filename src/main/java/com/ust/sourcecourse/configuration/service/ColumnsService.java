@@ -6,35 +6,28 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ust.sourcecourse.configuration.entity.DataSource;
 import com.ust.sourcecourse.configuration.entity.SourceColumn;
 import com.ust.sourcecourse.configuration.repository.SourceColumnRepository;
+import com.ust.sourcecourse.configuration.request.ColumnsRequest;
 import com.ust.sourcecourse.configuration.response.ColumnsResponse;
-import com.ust.sourcecourse.configuration.response.DBDataSourceInfo;
 
 @Service
 public class ColumnsService {
-//	private static final Object ColumnsEntity = null;
 	@Autowired
-	private static  SourceColumnRepository columnsRepository;
-//	public static  SourceColumn PostColumns(SourceColumn entity) {
-//		// TODO Auto-generated method stub
-//		
-//			return columnsRepository.save(entity);
-//		
-			
-//		}
+	private SourceColumnRepository columnsRepository;
 
-public List<SourceColumn> getColumnInfo() {
-	List<SourceColumn> columns = columnsRepository.findAll();
-	return columns;
-}
-public static  SourceColumn saveData(SourceColumn dbData) {
-	SourceColumn savedata = columnsRepository.save(dbData);
-	// TODO Auto-generated method stub
-	return savedata;
-}
-
-}
-
+	public List<SourceColumn> getColumnInfo() {
+		List<SourceColumn> columns = columnsRepository.findAll();
+		return columns;
+	}
 	
+	public ColumnsResponse saveData(ColumnsRequest dbData) {
+		SourceColumn sourceColumn = SourceColumn.builder().name(dbData.getName()).description(dbData.getDescription()).build();
+		
+		   sourceColumn = columnsRepository.save(sourceColumn);
+		
+		
+		  return  ColumnsResponse.builder().uid(sourceColumn.getUid()).name(sourceColumn.getName()).type(sourceColumn.getType()).build();
+	    }
+	}
+
