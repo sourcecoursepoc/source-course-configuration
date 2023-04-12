@@ -41,9 +41,6 @@ public class ProjectTableController {
 		ProjectInfo projInfo = projectTableService.getProjectTable(id);
 		return ResponseEntity.ok(projInfo);
 	}
-
-	
-	
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<ProjectInfo> updateProjectTable(@PathVariable Long id,
