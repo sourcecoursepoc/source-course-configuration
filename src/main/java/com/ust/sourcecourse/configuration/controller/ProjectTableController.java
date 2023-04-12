@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ust.sourcecourse.configuration.entity.ProjectTable;
 import com.ust.sourcecourse.configuration.request.ProjectTableRequest;
+import com.ust.sourcecourse.configuration.response.DBTable;
 import com.ust.sourcecourse.configuration.response.ProjectInfo;
 
 import com.ust.sourcecourse.configuration.service.ProjectTableService;
@@ -30,15 +31,15 @@ public class ProjectTableController {
 	private ProjectTableService projectTableService;
 
 	@PostMapping
-	public ResponseEntity<List<ProjectInfo>> createProjectTable(@Valid @RequestBody ProjectTableRequest ProjTableReq) {
-		List<ProjectInfo> projectTableResponse = projectTableService.createProjectTable(ProjTableReq);
-		return ResponseEntity.status(HttpStatus.CREATED.value()).body(projectTableResponse);
+	public ResponseEntity<List<DBTable>> createProjectTable(@Valid @RequestBody ProjectTableRequest projTableReq) {
+		List<DBTable> dbTables = projectTableService.createProjectTable(projTableReq);
+		return ResponseEntity.status(HttpStatus.CREATED.value()).body(dbTables);
 	}
 	
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<ProjectInfo> getProjectTable(@PathVariable Long id) {
-		ProjectInfo projInfo = projectTableService.getProjectTable(id);
+		ProjectInfo projInfo = projectTableService.getProjectTables(id);
 		return ResponseEntity.ok(projInfo);
 	}
 	
