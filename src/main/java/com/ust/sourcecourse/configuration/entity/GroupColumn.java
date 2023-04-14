@@ -1,6 +1,7 @@
 package com.ust.sourcecourse.configuration.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -84,5 +86,4 @@ public class GroupColumn {
 	@Column(name = "modified_timestamp")
 	@UpdateTimestamp
 	private LocalDateTime modifiedTimestamp;
-
-}
+	}
