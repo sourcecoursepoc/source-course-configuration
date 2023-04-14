@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ust.sourcecourse.configuration.entity.Project;
 import com.ust.sourcecourse.configuration.request.ProjectGroupRequest;
 import com.ust.sourcecourse.configuration.response.ProjectGroupResponse;
 import com.ust.sourcecourse.configuration.service.ProjectGroupService;
@@ -33,7 +34,7 @@ public class ProjectGroupController {
 		List<ProjectGroupResponse> projectGroupResponse = projectGroupService.createProGroup(projectGroupRequest);
 		return ResponseEntity.status(HttpStatus.CREATED.value()).body(projectGroupResponse);
 	}
-
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<ProjectGroupResponse> getProjectGroup(@PathVariable("id") Long id) {
 		ProjectGroupResponse projectGroupResponse = projectGroupService.getProjectGroup(id);
@@ -62,4 +63,19 @@ public class ProjectGroupController {
 		projectGroupService.deleteProjectGroup(id);
 		return ResponseEntity.noContent().build();
 	}
+	
+	
+	/*
+	 * @PostMapping("/{projectId}/tags/{tagId}") public ResponseEntity<Project>
+	 * addTagToProject(@PathVariable Long projectId, @PathVariable Long tagId) {
+	 * Project project = projectGroupService.addTagToProject(projectId, tagId); if
+	 * (project == null) { return ResponseEntity.notFound().build(); } else { return
+	 * ResponseEntity.ok().body(project); } }
+	 * 
+	 * @DeleteMapping("/{projectId}/tags/{tagId}") public ResponseEntity<Project>
+	 * removeTagFromProject(@PathVariable Long projectId, @PathVariable Long tagId)
+	 * { Project project = projectGroupService.removeTagFromProject(projectId,
+	 * tagId); if (project == null) { return ResponseEntity.notFound().build(); }
+	 * else { return ResponseEntity.ok().body(project); } }
+	 */
 }

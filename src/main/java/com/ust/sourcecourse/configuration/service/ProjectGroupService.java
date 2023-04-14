@@ -1,8 +1,12 @@
 package com.ust.sourcecourse.configuration.service;
 
 import java.util.Collections;
+
+import org.springframework.data.domain.Sort;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -112,4 +116,33 @@ public class ProjectGroupService {
 			return false;
 		}
 	}
+
+	/**
+	 * 
+	 * @param tags
+	 * @return
+	 *//*
+		 * 
+		 * 
+		 * 
+		 * public Project addTagToProject(Long projectId, Long tagId) {
+		 * Optional<Project> optionalProject = projectRepository.findById(projectId);
+		 * Optional<Tag> optionalTag = tagRepository.findById(tagId);
+		 * 
+		 * if (optionalProject.isPresent() && optionalTag.isPresent()) { Project project
+		 * = optionalProject.get(); Tag tag = optionalTag.get();
+		 * 
+		 * if (!project.getTags().contains(tag)) { project.addTag(tag);
+		 * projectRepository.save(project); } return project; } else { return null; } }
+		 * 
+		 * public Project removeTagFromProject(Long projectId, Long tagId) {
+		 * Optional<Project> optionalProject = projectRepository.findById(projectId);
+		 * Optional<Tag> optionalTag = tagRepository.findById(tagId);
+		 * 
+		 * if (optionalProject.isPresent() && optionalTag.isPresent()) { Project project
+		 * = optionalProject.get(); Tag tag = optionalTag.get();
+		 * 
+		 * if (project.getTags().contains(tag)) { project.removeTag(tag);
+		 * projectRepository.save(project); } return project; } else { return null; } }
+		 */
 }
