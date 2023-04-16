@@ -2,14 +2,9 @@ package com.ust.sourcecourse.configuration.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,7 +12,6 @@ import com.ust.sourcecourse.configuration.entity.Project;
 import com.ust.sourcecourse.configuration.entity.ProjectTable;
 import com.ust.sourcecourse.configuration.entity.SourceColumn;
 import com.ust.sourcecourse.configuration.entity.SourceTable;
-
 import com.ust.sourcecourse.configuration.repository.ProjectRepository;
 import com.ust.sourcecourse.configuration.repository.ProjectTableRepository;
 import com.ust.sourcecourse.configuration.repository.SourceTableRepository;
@@ -26,13 +20,10 @@ import com.ust.sourcecourse.configuration.response.DBTable;
 import com.ust.sourcecourse.configuration.response.DBTableColumn;
 import com.ust.sourcecourse.configuration.response.DBTableColumnMetadata;
 import com.ust.sourcecourse.configuration.response.DBTableMetadata;
-import com.ust.sourcecourse.configuration.response.ProjectInfo;
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class ProjectTableService {
 
-	private static final Logger logger = LoggerFactory.getLogger(ProjectTableService.class);
+public class ProjectTableService {
 
 	@Autowired
 	private ProjectTableRepository projectTableRepository;
@@ -50,28 +41,32 @@ public class ProjectTableService {
 	public List<DBTable> createProjectTable(ProjectTableRequest projTableReq) {
 
 		Project project = projectRepository.findByUid(projTableReq.getProjectUid());
-		logger.info("Project found: {}", project);
 
 		List<Long> sourceTableId = projTableReq.getSourceTableUids();
-		List<SourceTable> sourceTables = sourceTableRepository.findAllById(sourceTableId);
-		logger.info("Source tables found: {}", sourceTables);
+		List<ProjectTable> projectTables2 = project.getProjectTables();
+		for (ProjectTable projTable : projectTables2) {
+			if (sourceTableId != null && sourceTableId.contains(projTable.getSourceTable().getUid())) {
+				sourceTableId.remove(projTable.getSourceTable().getUid());
+			}
 
-		List<ProjectTable> projectTables = new ArrayList<>();
+		}
+		List<SourceTable> sourceTables = sourceTableRepository.findAllById(sourceTableId);
+
+		List<ProjectTable> projectTables = project.getProjectTables();
 		for (SourceTable sourceTable : sourceTables) {
 			ProjectTable projectTable = ProjectTable.builder().project(project).sourceTable(sourceTable).build();
 			projectTables.add(projectTable);
 		}
-
-		List<ProjectTable> savedProjectTables = projectTableRepository.saveAll(projectTables);
-
+		project.setProjectTables(projectTables);
+		project=projectRepository.save(project);
 		
-		List<DBTable> dbTables = sourceTables.stream().map(sourceTable -> getDBTable(sourceTable))
-				.toList();
+
+		List<DBTable> dbTables = project.getProjectTables().stream().map(projectTable -> getDBTable(projectTable.getSourceTable())).toList();
 
 		return dbTables;
 
 	}
-	
+
 	private DBTable getDBTable(SourceTable sourceTable) {
 		DBTableMetadata metadata = DBTableMetadata.builder().maxDate(sourceTable.getMaxDate())
 				.minDate(sourceTable.getMinDate()).momCount(sourceTable.getMomCount())
@@ -97,46 +92,41 @@ public class ProjectTableService {
 	 * @param id
 	 * @return
 	 */
-	public ProjectInfo getProjectTables(Long id) {
-		
-		
-		List<ProjectTable> projectTables = projectTableRepository.findByProjectUid(id);
-		for(ProjectTable projectTable: projectTables) {
-			DBTable dbTable = getDBTable(projectTable.getSourceTable());
-		}
-		
-		
-		ProjectTable projTable = projectTableRepository.findById(id).orElse(null);
-		if (projTable != null) {
 
-			return ProjectInfo.builder().uid(projTable.getUid()).build();
+	public List<DBTable> getProjectTables(Long id) {
 
-		} else {
-			String errormessage = "project id not found" + id;
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, errormessage);
-		}
+		Project projObj = projectRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "id not found"));
+		List<ProjectTable> projectTables = projObj.getProjectTables();
 
+		List<DBTable> tables = projectTables.stream().map(st -> getDBTable(st.getSourceTable())).toList();
+
+		return tables;
 	}
 
-	public ProjectInfo updateProjectTable(Long id, ProjectTable projectTable) {
-		Optional<ProjectTable> existingProjectTable = projectTableRepository.findById(id);
-		if (existingProjectTable.isPresent()) {
-			ProjectTable updatedProjectTable = projectTableRepository.save(projectTable);
-			return ProjectInfo.builder().uid(updatedProjectTable.getUid()).build();
-		} else {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "id not found");
-		}
 
-	}
+	/**
+	 * 
+	 * @param projectId
+	 * @param sourceId
+	 */
 
-	public void deleteSourceTable(Long id) {
-		Optional<ProjectTable> optionalProjectTable = projectTableRepository.findById(id);
-		if (optionalProjectTable.isPresent()) {
-			ProjectTable projectTable = optionalProjectTable.get();
-			projectTableRepository.delete(projectTable);
-		} else {
-			throw new EntityNotFoundException("ProjectTable not found with id: " + id);
+	public List<Long> deleteProjectTable(ProjectTableRequest projTableReq) {
+
+		List<ProjectTable> projectTableList = projectTableRepository.findByProjectUid(projTableReq.getProjectUid());
+		System.out.println(projectTableList);
+		List<Long> deletedUid = new ArrayList<>();
+		for (ProjectTable pt : projectTableList) {
+
+			List<Long> sourceTableUids = projTableReq.getSourceTableUids();
+			if (sourceTableUids != null && sourceTableUids.contains(pt.getSourceTable().getUid())) {
+				Long deleteUid = pt.getUid();
+
+				deletedUid.add(deleteUid);
+			}
 		}
+		projectTableRepository.deleteAllById(deletedUid);
+		return deletedUid;
 
 	}
 
