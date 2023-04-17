@@ -114,7 +114,6 @@ public class ProjectTableService {
 	public List<Long> deleteProjectTable(ProjectTableRequest projTableReq) {
 
 		List<ProjectTable> projectTableList = projectTableRepository.findByProjectUid(projTableReq.getProjectUid());
-		System.out.println(projectTableList);
 		List<Long> deletedUid = new ArrayList<>();
 		for (ProjectTable pt : projectTableList) {
 
