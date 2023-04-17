@@ -1,5 +1,7 @@
 package com.ust.sourcecourse.configuration.controller;
 
+
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,7 @@ public class ProjectController {
 	@GetMapping("/{uid}")
 	public ResponseEntity<ProjectInfo> getProjectById(@PathVariable Long uid) {
 		ProjectInfo projectInfo = projectService.getProjectById(uid);
+
 		if (projectInfo != null) {
 			return ResponseEntity.ok(projectInfo);
 		} else {
@@ -53,6 +56,7 @@ public class ProjectController {
 	public ResponseEntity<Void> deleteProject(@PathVariable Long uid) {
 		projectService.deleteProject(uid);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).build();
+
 	}
 	@PutMapping("/{uid}")
     public ResponseEntity<ProjectInfo> updateProject(@PathVariable Long uid, @RequestBody ProjectData projectData) {
