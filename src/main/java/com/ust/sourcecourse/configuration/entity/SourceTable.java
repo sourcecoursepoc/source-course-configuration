@@ -1,3 +1,4 @@
+
 package com.ust.sourcecourse.configuration.entity;
 
 import java.time.LocalDate;

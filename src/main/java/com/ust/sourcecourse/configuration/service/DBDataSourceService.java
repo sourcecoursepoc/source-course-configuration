@@ -1,7 +1,7 @@
+
 package com.ust.sourcecourse.configuration.service;
 
 import java.util.List;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,7 +55,7 @@ public class DBDataSourceService {
 	private DBDataSourceInfo getDBDataSourceInfo(DataSource dataSource) {
 		DBDataSourceInfo dataSourceInfo = getDBDataSource(dataSource);
 		DBMetadata metadata = DBMetadata.builder().region(dataSource.getRegion()).size(dataSource.getSize())
-				.status(dataSource.getSize()).totalTables(dataSource.getTotalTables()).build();
+				.status(dataSource.getStatus()).totalTables(dataSource.getTotalTables()).build();
 		dataSourceInfo.setMetadata(metadata);
 		List<DBTable> dbTables = dataSource.getSourceTables().stream().map(sourceTable -> getDBTable(sourceTable))
 				.toList();

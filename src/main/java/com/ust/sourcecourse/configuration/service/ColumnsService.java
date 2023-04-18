@@ -7,7 +7,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -42,6 +44,7 @@ public class ColumnsService {
 
 	}
 
+	@Transactional
 	public List<ColumnsResponse> saveData(Long groupId, List<ColumnsRequest> columnsRequests) {
 		Optional<ProjectGroup> optional = projectGroupRepository.findById(groupId);
 
@@ -65,7 +68,6 @@ public class ColumnsService {
 				groupColumns.add(groupColumn);
 				projectGroup.setGroupColumns(groupColumns);
 				projectGroup = projectGroupRepository.save(projectGroup);
-				System.out.println(projectGroup);
 			}
 			return getColumnResponses(projectGroup);
 
@@ -93,4 +95,46 @@ public class ColumnsService {
 		}
 		return columnsResponses;
 	}
+
+	public ColumnsResponse updateColumn(Long groupId, Long columnId, ColumnsRequest columnsRequest) {
+		Optional<ProjectGroup> optional = projectGroupRepository.findById(groupId);
+		if (optional.isPresent()) {
+	        ProjectGroup projectGroup = optional.get();
+	        List<GroupColumn> groupColumns = projectGroup.getGroupColumns();
+	        for(GroupColumn groupColumn : groupColumns)
+	        if(groupColumn.getUid().equals(columnId)) {
+	        	SourceColumn sourceColumn = columnsRepository.findById(columnsRequest.getSourceColumnUid())
+	        			.orElseThrow();
+	        	groupColumn.setName(columnsRequest.getName());
+	        	groupColumn.setNotes(columnsRequest.getNotes());
+	        	groupColumn.setType(groupColumn.getType());
+	        	groupColumn.setPrimary(groupColumn.isPrimary());
+	        	groupColumn.setDefaultValue(groupColumn.getDefaultValue());
+	        	groupColumn.setSuffix(groupColumn.getSuffix());
+	        	groupColumn.setPrefix(groupColumn.getPrefix());
+	        	groupColumn.setSourceColumn(sourceColumn);
+	        	
+	        	projectGroup = projectGroupRepository.save(projectGroup);
+	        	AttributesInfo attributesInfo = new AttributesInfo();
+	        	attributesInfo.setName(groupColumn.getName());
+	        	attributesInfo.setNotes(groupColumn.getNotes());
+	        	attributesInfo.setType(groupColumn.getType());
+	        	attributesInfo.setPrimary(groupColumn.isPrimary());
+	        	attributesInfo.setDefaultValue(groupColumn.getDefaultValue());
+	        	attributesInfo.setPrefix(groupColumn.getPrefix());
+	        	attributesInfo.setSuffix(groupColumn.getSuffix());
+	        	SourceInfo SourceInfo = new SourceInfo(groupColumn.getSourceColumn().getName(),groupColumn.getSourceColumn().getUid());
+	        	
+	        	ColumnsResponse columnsResponse = new ColumnsResponse(groupColumn.getUid(),attributesInfo,SourceInfo);
+	        	
+	        	return columnsResponse;
+	        }else {
+	    		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project Group with uid " + groupId + " not found");
+	    		
+	    	}
+	}
+		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "column with uid" + columnId+ "not found");		
 }
+	
+}
+

@@ -6,4 +6,5 @@ import com.ust.sourcecourse.configuration.entity.SourceTable;
 
 public interface SourceTableRepository extends JpaRepository<SourceTable, Long> {
 
+
 }

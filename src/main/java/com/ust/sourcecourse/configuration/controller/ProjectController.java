@@ -1,5 +1,7 @@
 package com.ust.sourcecourse.configuration.controller;
 
+
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +44,7 @@ public class ProjectController {
 	@GetMapping("/{uid}")
 	public ResponseEntity<ProjectInfo> getProjectById(@PathVariable Long uid) {
 		ProjectInfo projectInfo = projectService.getProjectById(uid);
+
 		if (projectInfo != null) {
 			return ResponseEntity.ok(projectInfo);
 		} else {
@@ -52,6 +56,12 @@ public class ProjectController {
 	public ResponseEntity<Void> deleteProject(@PathVariable Long uid) {
 		projectService.deleteProject(uid);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).build();
+
 	}
+	@PutMapping("/{uid}")
+    public ResponseEntity<ProjectInfo> updateProject(@PathVariable Long uid, @RequestBody ProjectData projectData) {
+		ProjectInfo projectInfo  = projectService.updateProject(uid, projectData);
+      return ResponseEntity.ok(projectInfo);
+    }
 
 }

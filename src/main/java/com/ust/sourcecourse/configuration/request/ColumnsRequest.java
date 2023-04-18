@@ -13,15 +13,11 @@ public class ColumnsRequest {
 	@NotBlank
 	private String notes;
 
-	private String Type;
-
-	private String description;
-
+	private String type;
 	private boolean isPrimary;
 	private String defaultvalue;
 	private String preffix;
 	private String suffix;
-
 	@NotNull
 	private Long sourceColumnUid;
 
