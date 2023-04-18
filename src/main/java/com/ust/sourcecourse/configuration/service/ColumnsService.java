@@ -5,14 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.catalina.Group;
-import org.hibernate.metamodel.relational.Column;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.ust.sourcecourse.configuration.entity.GroupColumn;
@@ -33,7 +29,6 @@ public class ColumnsService {
 
 	@Autowired
 	private ProjectGroupRepository projectGroupRepository;
-
 	public List<ColumnsResponse> getColumnInfo(Long groupId) {
 		Optional<ProjectGroup> optional = projectGroupRepository.findById(groupId);
 		if (optional.isPresent()) {
@@ -137,21 +132,11 @@ public class ColumnsService {
 	}
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "column with uid" + columnId+ "not found");		
 }
-//	@Transactional
-//	public void deleteColumn(Long groupId, Long columnId) {
-//		Optional <Group> group = groupRepository.findById(groupId);
-//		if(group.isPresent()) {
-//			Group existingGroup = group.get();
-//			List<Column> columns = existingGroup.getColumns();
-//			columns.removeIf(column -> column.getId().equals(columnId));
-//			existingGroup.setColumns(Columns);
-//			groupRepository.save(existingGroup);
-//		}else {
-//			throw new GroupNotFoundException ("Group not found with id: " + groupId);
-//
-//		}
-//		
-//	}
 	
-}
+	    
+	    }
+	
+
+	
+	
 

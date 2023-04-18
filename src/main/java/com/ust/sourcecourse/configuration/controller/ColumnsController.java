@@ -58,18 +58,6 @@ public class ColumnsController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
-	@DeleteMapping("/{groupId}/{columnId}")
-	public ResponseEntity<?> deleteColumn(@PathVariable Long groupId,@PathVariable Long ColumnId) {
-		try {
-			columnsService.deleteColumn(groupId, columnId);
-			return ResponseEntity.ok().build();
-			
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-	}
-
 }
+	
 
