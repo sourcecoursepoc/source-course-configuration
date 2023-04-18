@@ -29,6 +29,7 @@ public class HomeController {
 		return ResponseEntity.ok(homeService.getHomePageDetails());
 	}
 
+
 	@GetMapping("/tags/columns{uid}")
 	public ResponseEntity<List<String>> getDescriptionAndTags1(@PathVariable Long uid) {
 		List<String> homePageResponse = homeService.getDescriptionAndTags(uid);
@@ -66,4 +67,5 @@ public class HomeController {
 		homeService.deleteTableTags(uid);
 		return ResponseEntity.noContent().build();
 	}
+
 }
