@@ -6,4 +6,6 @@ import com.ust.sourcecourse.configuration.entity.SourceColumn;
 
 public interface SourceColumnRepository extends JpaRepository<SourceColumn, Long> {
 
-}
+	 
+	}
+

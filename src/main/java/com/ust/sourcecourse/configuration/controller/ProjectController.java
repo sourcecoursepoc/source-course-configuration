@@ -26,4 +26,5 @@ public class ProjectController {
 		ProjectInfo projectInfo = projectService.createProject(projectData);
 		return ResponseEntity.status(HttpStatus.CREATED.value()).body(projectInfo);
 	}
+	
 }
