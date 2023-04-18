@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.catalina.Group;
+import org.hibernate.metamodel.relational.Column;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -135,6 +137,21 @@ public class ColumnsService {
 	}
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "column with uid" + columnId+ "not found");		
 }
+//	@Transactional
+//	public void deleteColumn(Long groupId, Long columnId) {
+//		Optional <Group> group = groupRepository.findById(groupId);
+//		if(group.isPresent()) {
+//			Group existingGroup = group.get();
+//			List<Column> columns = existingGroup.getColumns();
+//			columns.removeIf(column -> column.getId().equals(columnId));
+//			existingGroup.setColumns(Columns);
+//			groupRepository.save(existingGroup);
+//		}else {
+//			throw new GroupNotFoundException ("Group not found with id: " + groupId);
+//
+//		}
+//		
+//	}
 	
 }
 
