@@ -18,6 +18,7 @@ public class ProjectGroupRequest {
 	@NotNull
 	private Long projectUid;
 
+	
 	private List<String> tags;
 
 }
