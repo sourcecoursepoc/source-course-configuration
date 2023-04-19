@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.ust.sourcecourse.configuration.entity.ProjectGroup;
+
 import com.ust.sourcecourse.configuration.request.ProjectGroupRequest;
 import com.ust.sourcecourse.configuration.response.ProjectGroupResponse;
 import com.ust.sourcecourse.configuration.service.ProjectGroupService;
@@ -103,8 +103,8 @@ public class ProjectGroupController {
 	 * @return
 	 */
 	@PostMapping("/{id}/tags")
-    public ResponseEntity<ProjectGroup> addTagToProjectGroup(@PathVariable ("id") Long uid, @RequestBody  List<String> tags) {
-        ProjectGroup updatedProjectGroup = projectGroupService.addTagToProjectGroup(uid, tags);
+    public ResponseEntity<List<String>> addTagToProjectGroup(@PathVariable ("id") Long uid, @RequestBody  List<String> tags) {
+        List<String> updatedProjectGroup = projectGroupService.addTagToProjectGroup(uid, tags);
         return ResponseEntity.ok(updatedProjectGroup);
     }
 	/**
@@ -113,6 +113,7 @@ public class ProjectGroupController {
 	 * @param delete tag
 	 * @return
 	 */
+	
 	
 	@DeleteMapping("/{id}/tags/{tag}")
 	public ResponseEntity<String> removeTagFromProjectGroup(@PathVariable ("id")Long uid, @PathVariable String tag) {

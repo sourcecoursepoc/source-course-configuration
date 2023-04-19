@@ -1,9 +1,10 @@
 package com.ust.sourcecourse.configuration.service;
 
 import java.util.Collections;
-
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import com.ust.sourcecourse.configuration.repository.ProjectRepository;
 import com.ust.sourcecourse.configuration.request.ProjectGroupRequest;
 import com.ust.sourcecourse.configuration.response.ProjectGroupResponse;
 import java.util.ArrayList;
-
 
 @Service
 public class ProjectGroupService {
@@ -125,7 +125,7 @@ public class ProjectGroupService {
 	 * @return
 	 */
 
-	public ProjectGroup addTagToProjectGroup(Long uid, List<String> tags) {
+	public List<String> addTagToProjectGroup(Long uid, List<String> tags) {
 		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
 				.orElseThrow(() -> new ResourceNotFoundException("ProjectGroup", "id", uid));
 		List<String> tag = projectGroup.getTags();
@@ -133,54 +133,55 @@ public class ProjectGroupService {
 			tag = new ArrayList<>();
 		}
 		tag.addAll(tags);
-		projectGroup.setTags(tag);
-		return projectGroupRepository.save(projectGroup);
+		Set<String> tagSet = new LinkedHashSet<>(tag);
+		projectGroup.setTags(new ArrayList<>(tagSet));
+		projectGroupRepository.save(projectGroup);
+		return projectGroup.getTags();
 	}
+
+	
 
 	/**
 	 * 
 	 * @param delete tags
 	 * @return
 	 */
-	
+
 	public ResponseEntity<String> removeTagFromProjectGroup(Long uid, String tag) {
-	    ProjectGroup updatedProjectGroup = projectGroupRepository.findById(uid)
-	        .orElseThrow(() -> new ResourceNotFoundException("ProjectGroup", "id", uid));
-	    List<String> tags = updatedProjectGroup.getTags();
-	    if (tags.remove(tag)) {
-	    	updatedProjectGroup.setTags(tags);
-	        projectGroupRepository.save(updatedProjectGroup);
-	        return ResponseEntity.ok("Tag '" + tag + "' deleted successfully");
-	    } else {
-	        return ResponseEntity.notFound().build();
-	    }
+		ProjectGroup updatedProjectGroup = projectGroupRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("ProjectGroup", "id", uid));
+		List<String> tags = updatedProjectGroup.getTags();
+		if (tags.remove(tag)) {
+			updatedProjectGroup.setTags(tags);
+			projectGroupRepository.save(updatedProjectGroup);
+			return ResponseEntity.ok("Tag '" + tag + "' deleted successfully");
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
-	
 	/**
 	 * 
-	 * @param Get Tags by Group 
+	 * @param Get Tags by Group
 	 * @return
 	 */
 
 	public List<String> getTagsByGroup(Long uid) {
-		 ProjectGroup projectGroup = projectGroupRepository.findById(uid)
-		            .orElseThrow(() -> new ResourceNotFoundException("ProjectGroup", "id", uid));
-		    return projectGroup.getTags();
+		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("ProjectGroup", "id", uid));
+		return projectGroup.getTags();
 	}
 
 	/**
 	 * 
 	 * @param search Groups By Tag
 	 * @return
-	 */ 
-	
+	 */
+
 	public List<ProjectGroupResponse> searchGroupsByTag(String tag) {
-		 List<ProjectGroup> groups = projectGroupRepository.findAll();
-		    return groups.stream()
-		            .filter(group -> group.getTags() != null && group.getTags().contains(tag))
-		            .map(group -> getProjectGroupresponse(group))
-		            .collect(Collectors.toList());
+		List<ProjectGroup> groups = projectGroupRepository.findAll();
+		return groups.stream().filter(group -> group.getTags() != null && group.getTags().contains(tag))
+				.map(group -> getProjectGroupresponse(group)).collect(Collectors.toList());
 	}
 
 }
