@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.ust.sourcecourse.configuration.request.ProjectTableRequest;
 import com.ust.sourcecourse.configuration.response.DBTable;
@@ -30,16 +31,27 @@ public class ProjectTableController {
 
 	@PostMapping
 	public ResponseEntity<List<DBTable>> createProjectTable(@Valid @RequestBody ProjectTableRequest projTableReq) {
-		List<DBTable> dbTables = projectTableService.createProjectTable(projTableReq);
+		List<DBTable> dbTables = null;
+		try {
+			dbTables = projectTableService.createProjectTable(projTableReq);
+		} catch (ResponseStatusException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+					"An error occurred while processing the request", ex);
+		}
 		return ResponseEntity.status(HttpStatus.CREATED.value()).body(dbTables);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<List<DBTable>> getProjectTable(@PathVariable("id") Long uid) {
-		List<DBTable> projInfo = projectTableService.getProjectTables(uid);
-		return ResponseEntity.ok(projInfo);
+		try {
+			List<DBTable> projInfo = projectTableService.getProjectTables(uid);
+			return ResponseEntity.ok(projInfo);
+		} catch (IllegalArgumentException ex) {
+			throw ex;
+		}
 	}
-
 
 	@DeleteMapping
 	public ResponseEntity<List<Long>> deleteProjectTable(@RequestBody ProjectTableRequest request) {

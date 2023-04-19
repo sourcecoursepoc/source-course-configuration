@@ -39,8 +39,13 @@ public class ProjectTableService {
 	 */
 
 	public List<DBTable> createProjectTable(ProjectTableRequest projTableReq) {
-
+		
 		Project project = projectRepository.findByUid(projTableReq.getProjectUid());
+		
+		
+		if (project == null) {
+	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found");
+	    }
 
 		List<Long> sourceTableId = projTableReq.getSourceTableUids();
 		List<ProjectTable> projectTables2 = project.getProjectTables();
@@ -55,13 +60,17 @@ public class ProjectTableService {
 		List<ProjectTable> projectTables = project.getProjectTables();
 		for (SourceTable sourceTable : sourceTables) {
 			ProjectTable projectTable = ProjectTable.builder().project(project).sourceTable(sourceTable).build();
+			if (projectTables.contains(projectTable)) {
+				
+	            throw new ResponseStatusException(HttpStatus.CONFLICT, "Project table already exists");
+	        }
 			projectTables.add(projectTable);
 		}
 		project.setProjectTables(projectTables);
-		project=projectRepository.save(project);
-		
+		project = projectRepository.save(project);
 
-		List<DBTable> dbTables = project.getProjectTables().stream().map(projectTable -> getDBTable(projectTable.getSourceTable())).toList();
+		List<DBTable> dbTables = project.getProjectTables().stream()
+				.map(projectTable -> getDBTable(projectTable.getSourceTable())).toList();
 
 		return dbTables;
 
@@ -104,7 +113,6 @@ public class ProjectTableService {
 		return tables;
 	}
 
-
 	/**
 	 * 
 	 * @param projectId
@@ -120,7 +128,6 @@ public class ProjectTableService {
 			List<Long> sourceTableUids = projTableReq.getSourceTableUids();
 			if (sourceTableUids != null && sourceTableUids.contains(pt.getSourceTable().getUid())) {
 				Long deleteUid = pt.getUid();
-
 				deletedUid.add(deleteUid);
 			}
 		}
