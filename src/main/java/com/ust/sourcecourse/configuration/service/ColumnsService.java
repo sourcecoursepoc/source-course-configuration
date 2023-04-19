@@ -96,7 +96,7 @@ public class ColumnsService {
 		return columnsResponses;
 	}
 
-	public ColumnsResponse updateColumn(Long groupId, Long columnId, ColumnsRequest columnsRequest) {
+	public ColumnsResponse updateColumn(Long columnId, ColumnsRequest columnsRequest) {
 		Optional<GroupColumn> optional = groupColumnRepository.findById(columnId);
 		if (optional.isPresent()) {
 			GroupColumn groupColumn = optional.get();
@@ -128,13 +128,22 @@ public class ColumnsService {
 	        	
 	        	return columnsResponse;
 	        }else {
-	    		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project Group with uid " + groupId + " not found");
+	    		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group column with uid " + columnId + " not found");
 	    		
-	    	}		
+	    	}	
+	
 }
+
+	public void deleteData(Long columnId) {
+		groupColumnRepository.deleteById(columnId);
+		
+		}
+		
+	}
+		// TODO Auto-generated method stub
+		
 	
 	    
-	    }
 	
 
 	
