@@ -48,16 +48,29 @@ public class ColumnsController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-	@PutMapping("/{groupId}/{columnId}")
-	public ResponseEntity<ColumnsResponse> updateColumn(@PathVariable Long groupId, @PathVariable Long columnId, @RequestBody ColumnsRequest columnsRequest) {
+	@PutMapping("/{columnId}")
+	public ResponseEntity<ColumnsResponse> updateColumn(@PathVariable Long columnId, @RequestBody ColumnsRequest columnsRequest) {
 	    try {
-	        ColumnsResponse updatedColumn = columnsService.updateColumn(groupId, columnId, columnsRequest);
+	        ColumnsResponse updatedColumn = columnsService.updateColumn(columnId, columnsRequest);
 	        return ResponseEntity.ok(updatedColumn);
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
+	@DeleteMapping("/{columnId}")
+	public ResponseEntity<ColumnsResponse> deleteData(@PathVariable Long columnId){
+		try {
+			columnsService.deleteData(columnId);
+			return ResponseEntity.noContent().build();
+		}catch (Exception e) {
+			e.printStackTrace();
+//			log.error("Error :",e);
+			
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+	
 }
 	
 
