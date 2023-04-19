@@ -86,4 +86,9 @@ public class GroupColumn {
 	@Column(name = "modified_timestamp")
 	@UpdateTimestamp
 	private LocalDateTime modifiedTimestamp;
+
+	public List<GroupColumn> getGroupColumns() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	}

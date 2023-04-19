@@ -54,7 +54,7 @@ public class ColumnsController {
 	        ColumnsResponse updatedColumn = columnsService.updateColumn(groupId, columnId, columnsRequest);
 	        return ResponseEntity.ok(updatedColumn);
 	    } catch (Exception e) {
-	    	e.printStackTrace();
+	        e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}

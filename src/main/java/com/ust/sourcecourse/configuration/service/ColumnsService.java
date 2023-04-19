@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.ust.sourcecourse.configuration.entity.GroupColumn;
 import com.ust.sourcecourse.configuration.entity.ProjectGroup;
 import com.ust.sourcecourse.configuration.entity.SourceColumn;
+import com.ust.sourcecourse.configuration.repository.GroupColumnRepository;
 import com.ust.sourcecourse.configuration.repository.ProjectGroupRepository;
 import com.ust.sourcecourse.configuration.repository.SourceColumnRepository;
 import com.ust.sourcecourse.configuration.request.ColumnsRequest;
@@ -29,6 +30,8 @@ public class ColumnsService {
 
 	@Autowired
 	private ProjectGroupRepository projectGroupRepository;
+	@Autowired
+	private GroupColumnRepository groupColumnRepository;
 	public List<ColumnsResponse> getColumnInfo(Long groupId) {
 		Optional<ProjectGroup> optional = projectGroupRepository.findById(groupId);
 		if (optional.isPresent()) {
@@ -63,9 +66,9 @@ public class ColumnsService {
 						.projectGroup(projectGroup).sourceColumn(sourceColumn).build();
 
 				groupColumns.add(groupColumn);
-				projectGroup.setGroupColumns(groupColumns);
-				projectGroup = projectGroupRepository.save(projectGroup);
 			}
+			projectGroup.setGroupColumns(groupColumns);
+			projectGroup = projectGroupRepository.save(projectGroup);
 			return getColumnResponses(projectGroup);
 
 		} else {
@@ -94,24 +97,23 @@ public class ColumnsService {
 	}
 
 	public ColumnsResponse updateColumn(Long groupId, Long columnId, ColumnsRequest columnsRequest) {
-		Optional<ProjectGroup> optional = projectGroupRepository.findById(groupId);
+		Optional<GroupColumn> optional = groupColumnRepository.findById(columnId);
 		if (optional.isPresent()) {
-	        ProjectGroup projectGroup = optional.get();
-	        List<GroupColumn> groupColumns = projectGroup.getGroupColumns();
-	        for(GroupColumn groupColumn : groupColumns)
-	        if(groupColumn.getUid().equals(columnId)) {
-	        	SourceColumn sourceColumn = columnsRepository.findById(columnsRequest.getSourceColumnUid())
-	        			.orElseThrow();
-	        	groupColumn.setName(columnsRequest.getName());
-	        	groupColumn.setNotes(columnsRequest.getNotes());
-	        	groupColumn.setType(groupColumn.getType());
-	        	groupColumn.setPrimary(groupColumn.isPrimary());
-	        	groupColumn.setDefaultValue(groupColumn.getDefaultValue());
-	        	groupColumn.setSuffix(groupColumn.getSuffix());
-	        	groupColumn.setPrefix(groupColumn.getPrefix());
-	        	groupColumn.setSourceColumn(sourceColumn);
-	        	
-	        	projectGroup = projectGroupRepository.save(projectGroup);
+			GroupColumn groupColumn = optional.get();
+			groupColumn.setName(columnsRequest.getName());
+			groupColumn.setNotes(columnsRequest.getNotes());
+        	groupColumn.setType(columnsRequest.getType());
+        	groupColumn.setPrimary(columnsRequest.isPrimary());
+        	groupColumn.setDefaultValue(columnsRequest.getDefaultvalue());
+        	groupColumn.setSuffix(columnsRequest.getSuffix());
+        	groupColumn.setPrefix(columnsRequest.getPreffix());
+            if(groupColumn.getUid().equals(columnId)) {
+            	SourceColumn sourceColumn = columnsRepository.findById(columnsRequest.getSourceColumnUid())
+            			.orElseThrow();
+            	groupColumn.setSourceColumn(sourceColumn);
+            	
+            }
+            groupColumnRepository.save(groupColumn);
 	        	AttributesInfo attributesInfo = new AttributesInfo();
 	        	attributesInfo.setName(groupColumn.getName());
 	        	attributesInfo.setNotes(groupColumn.getNotes());
@@ -128,9 +130,7 @@ public class ColumnsService {
 	        }else {
 	    		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project Group with uid " + groupId + " not found");
 	    		
-	    	}
-	}
-		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "column with uid" + columnId+ "not found");		
+	    	}		
 }
 	
 	    
