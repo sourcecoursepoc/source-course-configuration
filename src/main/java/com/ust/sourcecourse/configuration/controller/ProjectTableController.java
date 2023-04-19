@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.ust.sourcecourse.configuration.excpection.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.request.ProjectTableRequest;
 import com.ust.sourcecourse.configuration.response.DBTable;
 import com.ust.sourcecourse.configuration.service.ProjectTableService;
@@ -55,8 +56,12 @@ public class ProjectTableController {
 
 	@DeleteMapping
 	public ResponseEntity<List<Long>> deleteProjectTable(@RequestBody ProjectTableRequest request) {
-		List<Long> deleteTable = projectTableService.deleteProjectTable(request);
-		return ResponseEntity.status(HttpStatus.OK.value()).body(deleteTable);
+		try {
+			List<Long> deleteTable = projectTableService.deleteProjectTable(request);
+			return ResponseEntity.status(HttpStatus.OK.value()).body(deleteTable);
+		} catch (ResourceNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage(), ex);
+		}
 	}
 
 }

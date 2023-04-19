@@ -6,13 +6,21 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.ust.sourcecourse.configuration.excpection.ResourceNotFoundException;
+
 @RestControllerAdvice
 public class ExceptionHandlerController {
+	/**
+	 * 
+	 * @param ex
+	 * @return
+	 */
 
 	@ExceptionHandler(ResponseStatusException.class)
 	public ResponseEntity<ErrorResponse> handleResponseStatusException(ResponseStatusException ex) {
@@ -20,37 +28,61 @@ public class ExceptionHandlerController {
 		return ResponseEntity.status(ex.getStatusCode()).body(errorResponse);
 	}
 
+	/**
+	 * check body request for post
+	 * 
+	 * @param ex
+	 * @return
+	 */
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-	    String errorMessage = ex.getBindingResult().getFieldErrors()
-	            .stream()
-	            .map(error -> error.getField() + ": " + error.getDefaultMessage())
-	            .collect(Collectors.joining(", "));
-	    ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errorMessage);
-	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-	}
-
-
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
-		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Invalid request parameter");
+		String errorMessage = ex.getBindingResult().getFieldErrors().stream()
+				.map(error -> error.getField() + ": " + error.getDefaultMessage()).collect(Collectors.joining(", "));
+		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errorMessage);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 	}
 
-	@ExceptionHandler({EmptyResultDataAccessException.class, DataAccessException.class})
-	public ResponseEntity<ErrorResponse> handleDatabaseException(Exception ex) {
-	    ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
-	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+	/**
+	 * Invalid Request
+	 * 
+	 * @param ex
+	 * @return
+	 */
+
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
+		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(),"Invalid request parameter");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 	}
 
-	/*
-	 * @ExceptionHandler(Exception.class) public ResponseEntity<ErrorResponse>
-	 * handleException(Exception ex) { ErrorResponse errorResponse = new
-	 * ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), " server error");
-	 * return
-	 * ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-	 * }
+	/**
+	 * 
+	 * @param ex
+	 * @return
 	 */
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+	}
+
+	/**
+	 * 
+	 * @param ex
+	 * @return
+	 */
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+	}
+
+	@ExceptionHandler({ EmptyResultDataAccessException.class, DataAccessException.class })
+	public ResponseEntity<ErrorResponse> handleDatabaseException(Exception ex) {
+		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+	}
 
 	public static class ErrorResponse {
 		private int status;
