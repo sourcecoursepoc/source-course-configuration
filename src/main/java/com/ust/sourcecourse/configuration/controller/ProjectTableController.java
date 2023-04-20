@@ -29,6 +29,11 @@ public class ProjectTableController {
 
 	@Autowired
 	private ProjectTableService projectTableService;
+	/**
+	 * 
+	 * @param projTableReq
+	 * @return
+	 */
 
 	@PostMapping
 	public ResponseEntity<List<DBTable>> createProjectTable(@Valid @RequestBody ProjectTableRequest projTableReq) {
@@ -44,6 +49,11 @@ public class ProjectTableController {
 		return ResponseEntity.status(HttpStatus.CREATED.value()).body(dbTables);
 	}
 
+	/**
+	 * 
+	 * @param uid
+	 * @return
+	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<List<DBTable>> getProjectTable(@PathVariable("id") Long uid) {
 		try {
@@ -53,6 +63,11 @@ public class ProjectTableController {
 			throw ex;
 		}
 	}
+	/**
+	 * 
+	 * @param request
+	 * @return
+	 */
 
 	@DeleteMapping
 	public ResponseEntity<List<Long>> deleteProjectTable(@RequestBody ProjectTableRequest request) {
