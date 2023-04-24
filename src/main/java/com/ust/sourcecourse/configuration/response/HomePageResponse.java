@@ -15,4 +15,5 @@ public class HomePageResponse {
 	private String description;
 	private int tables;
 	private int groups;
+
 }
