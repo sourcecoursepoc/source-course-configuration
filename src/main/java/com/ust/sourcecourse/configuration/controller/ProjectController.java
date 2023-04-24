@@ -1,7 +1,5 @@
 package com.ust.sourcecourse.configuration.controller;
 
-
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,10 +56,11 @@ public class ProjectController {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).build();
 
 	}
+
 	@PutMapping("/{uid}")
-    public ResponseEntity<ProjectInfo> updateProject(@PathVariable Long uid, @RequestBody ProjectData projectData) {
-		ProjectInfo projectInfo  = projectService.updateProject(uid, projectData);
-      return ResponseEntity.ok(projectInfo);
-    }
+	public ResponseEntity<ProjectInfo> updateProject(@PathVariable Long uid, @RequestBody ProjectData projectData) {
+		ProjectInfo projectInfo = projectService.updateProject(uid, projectData);
+		return ResponseEntity.ok(projectInfo);
+	}
 
 }

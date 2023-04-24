@@ -1,16 +1,24 @@
 
 package com.ust.sourcecourse.configuration.service;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.ust.sourcecourse.configuration.entity.ConnectionInfo;
 import com.ust.sourcecourse.configuration.entity.DataSource;
 import com.ust.sourcecourse.configuration.entity.SourceColumn;
 import com.ust.sourcecourse.configuration.entity.SourceTable;
+import com.ust.sourcecourse.configuration.exceptions.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.repository.DataSourceRepository;
+import com.ust.sourcecourse.configuration.repository.SourceColumnRepository;
+import com.ust.sourcecourse.configuration.repository.SourceTableRepository;
 import com.ust.sourcecourse.configuration.request.DBData;
 import com.ust.sourcecourse.configuration.response.DBDataSourceInfo;
 import com.ust.sourcecourse.configuration.response.DBMetadata;
@@ -26,6 +34,10 @@ public class DBDataSourceService {
 
 	@Autowired
 	private DataSourceRepository dataSourceRepository;
+	@Autowired
+	private SourceColumnRepository sourceColumnRepository;
+	@Autowired
+	private SourceTableRepository sourceTableRepository;
 
 	@Transactional
 	public DBDataSourceInfo saveDB(DBData dbData) {
@@ -69,17 +81,108 @@ public class DBDataSourceService {
 				.yoyCount(sourceTable.getYoyCount()).rowCount(sourceTable.getRowCount()).size(sourceTable.getSize())
 				.build();
 		List<DBTableColumn> dbTableColumns = sourceTable.getSourceColumns().stream()
-				.map(sourceColumn -> getDBTableColumn(sourceColumn)).toList();
+				.map(sourceColumn -> getDBTableColumn1(sourceColumn)).toList();
 		return DBTable.builder().uid(sourceTable.getUid()).tableName(sourceTable.getName())
 				.description(sourceTable.getDescription()).metadata(metadata).tags(sourceTable.getTags())
 				.columns(dbTableColumns).build();
 	}
 
-	private DBTableColumn getDBTableColumn(SourceColumn sourceColumn) {
+	private DBTableColumn getDBTableColumn1(SourceColumn sourceColumn) {
 		DBTableColumnMetadata metadata = DBTableColumnMetadata.builder().type(sourceColumn.getType())
 				.isPrimary(sourceColumn.isPrimary()).isNullable(sourceColumn.isNullable())
 				.isUnique(sourceColumn.isUnique()).defaultValue(sourceColumn.getDefaultValue()).build();
 		return DBTableColumn.builder().uid(sourceColumn.getUid()).name(sourceColumn.getName())
 				.description(sourceColumn.getDescription()).metadata(metadata).tags(sourceColumn.getTags()).build();
+	}
+
+	public List<String> getTagsByColumn(Long uid) {
+		SourceColumn sourceColumn = sourceColumnRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("SourceColumn", "id", uid));
+		return sourceColumn.getTags();
+	}
+
+	public List<String> getTagsByTable(Long uid) {
+		SourceTable sourceTable = sourceTableRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("SourceTable", "id", uid));
+		return sourceTable.getTags();
+	}
+
+	public ResponseEntity<String> removeTagFromSourceColumn(Long uid, String tag) {
+		SourceColumn updatedSourceColumn = sourceColumnRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("SourceColumn", "id", uid));
+		List<String> tags = updatedSourceColumn.getTags();
+		if (tags.remove(tag)) {
+			updatedSourceColumn.setTags(tags);
+			sourceColumnRepository.save(updatedSourceColumn);
+			return ResponseEntity.ok("Tag '" + tag + "' deleted successfully");
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	public ResponseEntity<String> removeTagFromSourceTable(Long uid, String tag) {
+		SourceTable updatedSourcetable = sourceTableRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("SourceTable", "id", uid));
+		List<String> tags = updatedSourcetable.getTags();
+		if (tags.remove(tag)) {
+			updatedSourcetable.setTags(tags);
+			sourceTableRepository.save(updatedSourcetable);
+			return ResponseEntity.ok("Tag '" + tag + "' deleted successfully");
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	public List<DBTable> searchTablesByTag(String tag) {
+		List<SourceTable> sourcetables = sourceTableRepository.findAll();
+		return sourcetables.stream()
+				.filter(sourcetable -> sourcetable.getTags() != null && sourcetable.getTags().contains(tag))
+				.map(sourcetable -> getDBTable(sourcetable)).collect(Collectors.toList());
+	}
+
+	public List<DBTableColumn> searchcolumnByTag(String tag) {
+		List<SourceColumn> sourcecolumns = sourceColumnRepository.findAll();
+		return sourcecolumns.stream()
+				.filter(sourcecolumn -> sourcecolumn.getTags() != null && sourcecolumn.getTags().contains(tag))
+				.map(sourcecolumn -> getDBTableColumn1(sourcecolumn)).collect(Collectors.toList());
+
+	}
+
+	public List<String> addTagSourceTable(Long uid, List<String> tags, String description) {
+		SourceTable sourceTable = sourceTableRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("sourcetable", "id", uid));
+
+		List<String> tagList = sourceTable.getTags();
+		if (tagList == null) {
+			tagList = new ArrayList<>();
+		}
+		tagList.addAll(tags);
+		Set<String> tagSet = new LinkedHashSet<>(tagList);
+		sourceTable.setTags(new ArrayList<>(tagSet));
+
+		sourceTable.setDescription(description); // Set the description
+
+		sourceTableRepository.save(sourceTable);
+
+		return sourceTable.getTags();
+	}
+
+	public List<String> addTagSourceColumn(Long uid, List<String> tags, String description) {
+		SourceColumn sourceColumn = sourceColumnRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("sourceColumn", "id", uid));
+
+		List<String> tagList = sourceColumn.getTags();
+		if (tagList == null) {
+			tagList = new ArrayList<>();
+		}
+		tagList.addAll(tags);
+		Set<String> tagSet = new LinkedHashSet<>(tagList);
+		sourceColumn.setTags(new ArrayList<>(tagSet));
+
+		sourceColumn.setDescription(description); // Set the description
+
+		sourceColumnRepository.save(sourceColumn);
+
+		return sourceColumn.getTags();
 	}
 }

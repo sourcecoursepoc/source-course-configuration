@@ -16,3 +16,4 @@ public class DBTable {
 	private List<String> tags;
 	private List<DBTableColumn> columns;
 }
+
