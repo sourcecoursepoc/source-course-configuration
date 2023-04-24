@@ -9,16 +9,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ust.sourcecourse.configuration.entity.SourceColumn;
-import com.ust.sourcecourse.configuration.entity.SourceTable;
 import com.ust.sourcecourse.configuration.request.DBData;
-import com.ust.sourcecourse.configuration.request.HomeRequest;
 import com.ust.sourcecourse.configuration.response.DBDataSourceInfo;
+import com.ust.sourcecourse.configuration.response.DBTable;
+import com.ust.sourcecourse.configuration.response.DBTableColumn;
 import com.ust.sourcecourse.configuration.service.DBDataSourceService;
 
 import jakarta.validation.Valid;
@@ -46,40 +44,59 @@ public class DBDataSourceController {
 		return ResponseEntity.ok(dataSourceService.getDBInfo());
 	}
 
-	@GetMapping("/tags/columns/{uid}")
-	public ResponseEntity<List<String>> getColumnTags(@PathVariable Long uid) {
-		List<String> columnTags = dataSourceService.getColumnTags(uid);
-		return ResponseEntity.ok(columnTags);
+	@DeleteMapping("/table/{id}/{tag}")
+	public ResponseEntity<String> removeTagFromSourceTable(@PathVariable("id") Long uid, @PathVariable String tag) {
+		ResponseEntity<String> updatedSourceTable = dataSourceService.removeTagFromSourceTable(uid, tag);
+		if (updatedSourceTable != null) {
+			return ResponseEntity.ok("Tag '" + tag + "' deleted successfully from SourceTable with id " + uid);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
-	@GetMapping("/tags/tables/{uid}")
-	public ResponseEntity<List<String>> getTableTags(@PathVariable Long uid) {
-		List<String> tableTags = dataSourceService.getTableTags(uid);
-		return ResponseEntity.ok(tableTags);
+	@DeleteMapping("/column/{id}/{tag}")
+	public ResponseEntity<String> removeTagFromSourceColumn(@PathVariable("id") Long uid, @PathVariable String tag) {
+		ResponseEntity<String> updatedSourceColumn = dataSourceService.removeTagFromSourceColumn(uid, tag);
+		if (updatedSourceColumn != null) {
+			return ResponseEntity.ok("Tag '" + tag + "' deleted successfully from SourceColumn with id " + uid);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
-	@PutMapping("/tags/columns/{uid}")
-	public ResponseEntity<List<String>> updateColumnTags(@PathVariable Long uid, @RequestBody HomeRequest request) {
-		SourceColumn column = dataSourceService.updateColumnDescriptionAndTags(uid, request);
-		return ResponseEntity.ok(column.getTags());
+	@GetMapping("/table/tags/{id}")
+	public ResponseEntity<List<String>> getTagsBySourceTable(@PathVariable("id") Long uid) {
+		List<String> tags = dataSourceService.getTagsByTable(uid);
+		return ResponseEntity.ok(tags);
 	}
 
-	@PutMapping("/tags/tables/{uid}")
-	public ResponseEntity<List<String>> updateTableTags(@PathVariable Long uid, @RequestBody HomeRequest request) {
-		SourceTable table = dataSourceService.updateTableDescriptionAndTags(uid, request);
-		return ResponseEntity.ok(table.getTags());
+	@GetMapping("/column/tags/{id}")
+	public ResponseEntity<List<String>> getTagsBySourceColumn(@PathVariable("id") Long uid) {
+		List<String> tags = dataSourceService.getTagsByColumn(uid);
+		return ResponseEntity.ok(tags);
 	}
 
-	@DeleteMapping("/tags/columns/{uid}")
-	public ResponseEntity<Void> deleteColumnTags(@PathVariable Long uid) {
-		dataSourceService.deleteColumnTags(uid);
-		return ResponseEntity.noContent().build();
+	@GetMapping("/table/search/{tag}")
+	public ResponseEntity<List<DBTable>> searchTablesByTag(@PathVariable String tag) {
+		List<DBTable> sourcetables = dataSourceService.searchTablesByTag(tag);
+		return ResponseEntity.ok(sourcetables);
 	}
 
-	@DeleteMapping("/tags/tables/{uid}")
-	public ResponseEntity<Void> deleteTableTags(@PathVariable Long uid) {
-		dataSourceService.deleteTableTags(uid);
-		return ResponseEntity.noContent().build();
+	@GetMapping("/column/search/{tag}")
+	public ResponseEntity<List<DBTableColumn>> searchColumnByTag(@PathVariable String tag) {
+		List<DBTableColumn> groups = dataSourceService.searchcolumnByTag(tag);
+		return ResponseEntity.ok(groups);
 	}
+	@PostMapping("table/post/{tags}")
+    public ResponseEntity<List<String>> addTagToSourceTable(@PathVariable ("id") Long uid, @RequestBody  List<String> tags) {
+        List<String> updatedSourceTable= dataSourceService.addTagSourceTable(uid, tags);
+        return ResponseEntity.ok(updatedSourceTable);
+    }
+	@PostMapping("column/post/{tags}")
+    public ResponseEntity<List<String>> addTagToSourceColumn(@PathVariable ("id") Long uid, @RequestBody  List<String> tags) {
+        List<String> updatedSourceColumn= dataSourceService.addTagToSourceColumn(uid, tags);
+        return ResponseEntity.ok(updatedSourceColumn);
+    }
+	
 
 }

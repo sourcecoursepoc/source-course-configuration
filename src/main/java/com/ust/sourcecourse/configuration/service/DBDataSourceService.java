@@ -1,21 +1,25 @@
 
 package com.ust.sourcecourse.configuration.service;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.ust.sourcecourse.configuration.entity.ConnectionInfo;
 import com.ust.sourcecourse.configuration.entity.DataSource;
 import com.ust.sourcecourse.configuration.entity.SourceColumn;
 import com.ust.sourcecourse.configuration.entity.SourceTable;
+import com.ust.sourcecourse.configuration.exceptions.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.repository.DataSourceRepository;
 import com.ust.sourcecourse.configuration.repository.SourceColumnRepository;
 import com.ust.sourcecourse.configuration.repository.SourceTableRepository;
 import com.ust.sourcecourse.configuration.request.DBData;
-import com.ust.sourcecourse.configuration.request.HomeRequest;
 import com.ust.sourcecourse.configuration.response.DBDataSourceInfo;
 import com.ust.sourcecourse.configuration.response.DBMetadata;
 import com.ust.sourcecourse.configuration.response.DBTable;
@@ -23,7 +27,6 @@ import com.ust.sourcecourse.configuration.response.DBTableColumn;
 import com.ust.sourcecourse.configuration.response.DBTableColumnMetadata;
 import com.ust.sourcecourse.configuration.response.DBTableMetadata;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -92,72 +95,86 @@ public class DBDataSourceService {
 				.description(sourceColumn.getDescription()).metadata(metadata).tags(sourceColumn.getTags()).build();
 	}
 
-	public List<String> getDescriptionAndTags(Long uid) {
-		SourceTable homePage = sourceTableRepository.findById(uid).orElseThrow();
-
-		return homePage.getTags();
+	public List<String> getTagsByColumn(Long uid) {
+		SourceColumn sourceColumn = sourceColumnRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("SourceColumn", "id", uid));
+		return sourceColumn.getTags();
 	}
 
-	public List<String> getColumnTags(Long uid) {
-		Optional<SourceColumn> column = sourceColumnRepository.findById(uid);
-		if (column.isPresent()) {
-			return column.get().getTags();
+	public List<String> getTagsByTable(Long uid) {
+		SourceTable sourceTable = sourceTableRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("SourceTable", "id", uid));
+		return sourceTable.getTags();
+	}
+
+	public ResponseEntity<String> removeTagFromSourceColumn(Long uid, String tag) {
+		SourceColumn updatedSourceColumn = sourceColumnRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("SourceColumn", "id", uid));
+		List<String> tags = updatedSourceColumn.getTags();
+		if (tags.remove(tag)) {
+			updatedSourceColumn.setTags(tags);
+			sourceColumnRepository.save(updatedSourceColumn);
+			return ResponseEntity.ok("Tag '" + tag + "' deleted successfully");
 		} else {
-			throw new EntityNotFoundException("SourceColumn with uid " + uid + " not found");
+			return ResponseEntity.notFound().build();
 		}
 	}
 
-	public List<String> getTableTags(Long uid) {
-		Optional<SourceTable> table = sourceTableRepository.findById(uid);
-		if (table.isPresent()) {
-			return table.get().getTags();
+	public ResponseEntity<String> removeTagFromSourceTable(Long uid, String tag) {
+		SourceTable updatedSourcetable = sourceTableRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("SourceTable", "id", uid));
+		List<String> tags = updatedSourcetable.getTags();
+		if (tags.remove(tag)) {
+			updatedSourcetable.setTags(tags);
+			sourceTableRepository.save(updatedSourcetable);
+			return ResponseEntity.ok("Tag '" + tag + "' deleted successfully");
 		} else {
-			throw new EntityNotFoundException("SourceTable with uid " + uid + " not found");
+			return ResponseEntity.notFound().build();
 		}
 	}
 
-	public SourceColumn updateColumnDescriptionAndTags(Long uid, HomeRequest request) {
-		Optional<SourceColumn> column = sourceColumnRepository.findById(uid);
-		if (column.isPresent()) {
-			column.get().setTags(request.getTags());
-			sourceColumnRepository.save(column.get());
-			return column.get();
-		} else {
-			throw new EntityNotFoundException("SourceColumn with uid " + uid + " not found");
-		}
+	public List<DBTable> searchTablesByTag(String tag) {
+		List<SourceTable> sourcetables = sourceTableRepository.findAll();
+		return sourcetables.stream()
+				.filter(sourcetable -> sourcetable.getTags() != null && sourcetable.getTags().contains(tag))
+				.map(sourcetable -> getDBTable(sourcetable)).collect(Collectors.toList());
 	}
 
-	public SourceTable updateTableDescriptionAndTags(Long uid, HomeRequest request) {
-		Optional<SourceTable> table = sourceTableRepository.findById(uid);
-		if (table.isPresent()) {
-			table.get().setTags(request.getTags());
-			sourceTableRepository.save(table.get());
-			return table.get();
-		} else {
-			throw new EntityNotFoundException("SourceTable with uid " + uid + " not found");
-		}
+	public List<DBTableColumn> searchcolumnByTag(String tag) {
+		List<SourceColumn> sourcecolumns = sourceColumnRepository.findAll();
+		return sourcecolumns.stream()
+				.filter(sourcecolumn -> sourcecolumn.getTags() != null && sourcecolumn.getTags().contains(tag))
+				.map(sourcecolumn -> getDBTableColumn1(sourcecolumn)).collect(Collectors.toList());
+
 	}
 
-	public void deleteColumnTags(Long uid) {
-		Optional<SourceColumn> column = sourceColumnRepository.findById(uid);
-		if (column.isPresent()) {
-			List<String> Tags=column.get().getTags();
-			sourceColumnRepository.delete((SourceColumn) Tags);
-//			sourceColumnRepository.save(column.get());
-		} else {
-			throw new EntityNotFoundException("SourceColumn with uid " + uid + " not found");
+	public List<String> addTagSourceTable(long uid, List<String> tags) {
+		SourceTable sourceTable = sourceTableRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("sourcetable", "id", uid));
+		List<String> tag = sourceTable.getTags();
+		if (tag == null) {
+			tag = new ArrayList<>();
 		}
+		tag.addAll(tags);
+		Set<String> tagSet = new LinkedHashSet<>(tag);
+		sourceTable.setTags(new ArrayList<>(tagSet));
+		sourceTableRepository.save(sourceTable);
+		return sourceTableRepository.getTags();
+
 	}
 
-	public void deleteTableTags(Long uid) {
-		Optional<SourceTable> table = sourceTableRepository.findById(uid);
-		if (table.isPresent()) {
-			
-			List<String> tags=table.get().getTags();
-			
-			sourceTableRepository.delete((SourceTable) tags);
-		} else {
-			throw new EntityNotFoundException("SourceTable with uid " + uid + " not found");
+	public List<String> addTagToSourceColumn(Long uid, List<String> tags) {
+		SourceColumn sourceColumn = sourceColumnRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("sourceColumn", "id", uid));
+		List<String> tag = sourceColumn.getTags();
+		if (tag == null) {
+			tag = new ArrayList<>();
 		}
+		tag.addAll(tags);
+		Set<String> tagSet = new LinkedHashSet<>(tag);
+		sourceColumn.setTags(new ArrayList<>(tagSet));
+		sourceColumnRepository.save(sourceColumn);
+		return sourceColumnRepository.getTags();
 	}
+
 }

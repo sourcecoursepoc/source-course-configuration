@@ -5,10 +5,10 @@ import java.util.List;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 @Data
-public class HomeRequest {
+public class TagDescriptionRequest {
 	@NotBlank
 	private String description;
-	@NotBlank
+	
 	private List<String> Tags;
 
 
