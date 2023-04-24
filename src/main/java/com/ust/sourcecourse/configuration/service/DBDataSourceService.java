@@ -148,33 +148,46 @@ public class DBDataSourceService {
 
 	}
 
-	public List<String> addTagSourceTable(long uid, List<String> tags) {
-		SourceTable sourceTable = sourceTableRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("sourcetable", "id", uid));
-		List<String> tag = sourceTable.getTags();
-		if (tag == null) {
-			tag = new ArrayList<>();
-		}
-		tag.addAll(tags);
-		Set<String> tagSet = new LinkedHashSet<>(tag);
-		sourceTable.setTags(new ArrayList<>(tagSet));
-		sourceTableRepository.save(sourceTable);
-		return sourceTableRepository.getTags();
-
+	public List<String> addTagSourceTable(Long uid, List<String> tags,String description ) {
+	    SourceTable sourceTable = sourceTableRepository.findById(uid)
+	        .orElseThrow(() -> new ResourceNotFoundException("sourcetable", "id", uid));
+	        
+	    List<String> tagList = sourceTable.getTags();
+	    if (tagList == null) {
+	        tagList = new ArrayList<>();
+	    }
+	    tagList.addAll(tags);
+	    Set<String> tagSet = new LinkedHashSet<>(tagList);
+	    sourceTable.setTags(new ArrayList<>(tagSet));
+	    
+	    sourceTable.setDescription(description); // Set the description
+	    
+	    sourceTableRepository.save(sourceTable);
+	    
+	    return sourceTable.getTags();
 	}
 
-	public List<String> addTagToSourceColumn(Long uid, List<String> tags) {
-		SourceColumn sourceColumn = sourceColumnRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("sourceColumn", "id", uid));
-		List<String> tag = sourceColumn.getTags();
-		if (tag == null) {
-			tag = new ArrayList<>();
-		}
-		tag.addAll(tags);
-		Set<String> tagSet = new LinkedHashSet<>(tag);
-		sourceColumn.setTags(new ArrayList<>(tagSet));
-		sourceColumnRepository.save(sourceColumn);
-		return sourceColumnRepository.getTags();
+
+	public List<String> addTagSourceColumn(Long uid, List<String> tags, String description) {
+	    SourceColumn sourceColumn = sourceColumnRepository.findById(uid)
+	        .orElseThrow(() -> new ResourceNotFoundException("sourceColumn", "id", uid));
+	        
+	    List<String> tagList = sourceColumn.getTags();
+	    if (tagList == null) {
+	        tagList = new ArrayList<>();
+	    }
+	    tagList.addAll(tags);
+	    Set<String> tagSet = new LinkedHashSet<>(tagList);
+	    sourceColumn.setTags(new ArrayList<>(tagSet));
+	    
+	    sourceColumn.setDescription(description); // Set the description
+	    
+	    sourceColumnRepository.save(sourceColumn);
+	    
+	    return sourceColumn.getTags();
 	}
+
+
+	
 
 }

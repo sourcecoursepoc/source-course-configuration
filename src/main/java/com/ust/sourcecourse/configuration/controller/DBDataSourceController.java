@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ust.sourcecourse.configuration.request.DBData;
+import com.ust.sourcecourse.configuration.request.TagDescriptionRequest;
 import com.ust.sourcecourse.configuration.response.DBDataSourceInfo;
 import com.ust.sourcecourse.configuration.response.DBTable;
 import com.ust.sourcecourse.configuration.response.DBTableColumn;
@@ -87,16 +88,17 @@ public class DBDataSourceController {
 		List<DBTableColumn> groups = dataSourceService.searchcolumnByTag(tag);
 		return ResponseEntity.ok(groups);
 	}
-	@PostMapping("table/post/{tags}")
-    public ResponseEntity<List<String>> addTagToSourceTable(@PathVariable ("id") Long uid, @RequestBody  List<String> tags) {
-        List<String> updatedSourceTable= dataSourceService.addTagSourceTable(uid, tags);
-        return ResponseEntity.ok(updatedSourceTable);
-    }
-	@PostMapping("column/post/{tags}")
-    public ResponseEntity<List<String>> addTagToSourceColumn(@PathVariable ("id") Long uid, @RequestBody  List<String> tags) {
-        List<String> updatedSourceColumn= dataSourceService.addTagToSourceColumn(uid, tags);
-        return ResponseEntity.ok(updatedSourceColumn);
-    }
 	
+	@PostMapping("/column/{id}")
+	public ResponseEntity<List<String>> addTagToSourceColumn(@PathVariable("id") Long uid, @RequestBody TagDescriptionRequest request) {
+	    List<String> updatedSourceColumn = dataSourceService.addTagSourceColumn(uid, request.getTags(), request.getDescription());
+	    return ResponseEntity.ok(updatedSourceColumn);
+	}
+
+	@PostMapping("/table/{id}")
+	public ResponseEntity<List<String>> addTagToSourceTable(@PathVariable ("id") Long uid, @RequestBody TagDescriptionRequest request) {
+	    List<String> updatedSourceTable = dataSourceService.addTagSourceTable(uid, request.getTags(), request.getDescription());
+	    return ResponseEntity.ok(updatedSourceTable);
+	}
 
 }
