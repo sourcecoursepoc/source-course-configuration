@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.ust.sourcecourse.configuration.excpection.ResourceNotFoundException;
+import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.request.ProjectTableRequest;
 import com.ust.sourcecourse.configuration.response.DBTable;
 import com.ust.sourcecourse.configuration.service.ProjectTableService;

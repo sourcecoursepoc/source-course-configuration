@@ -12,7 +12,7 @@ import com.ust.sourcecourse.configuration.entity.Project;
 import com.ust.sourcecourse.configuration.entity.ProjectTable;
 import com.ust.sourcecourse.configuration.entity.SourceColumn;
 import com.ust.sourcecourse.configuration.entity.SourceTable;
-import com.ust.sourcecourse.configuration.excpection.ResourceNotFoundException;
+import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.repository.ProjectRepository;
 import com.ust.sourcecourse.configuration.repository.ProjectTableRepository;
 import com.ust.sourcecourse.configuration.repository.SourceTableRepository;
