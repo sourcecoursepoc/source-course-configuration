@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.ust.sourcecourse.configuration.excpection.ProjectNotFoundException;
 import com.ust.sourcecourse.configuration.excpection.ResourceNotFoundException;
 
 @RestControllerAdvice
@@ -51,8 +52,9 @@ public class ExceptionHandlerController {
 	 */
 
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-	public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
-		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(),"Invalid request parameter");
+	public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(
+			HttpRequestMethodNotSupportedException ex) {
+		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Invalid request parameter");
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 	}
 
@@ -82,6 +84,18 @@ public class ExceptionHandlerController {
 	public ResponseEntity<ErrorResponse> handleDatabaseException(Exception ex) {
 		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+	}
+
+	/**
+	 * project not found
+	 * 
+	 * @param ex
+	 * @return
+	 */
+
+	@ExceptionHandler(ProjectNotFoundException.class)
+	public ResponseEntity<String> handleProjectNotFoundException(ProjectNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 	}
 
 	public static class ErrorResponse {

@@ -1,7 +1,5 @@
 package com.ust.sourcecourse.configuration.controller;
 
-
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ust.sourcecourse.configuration.excpection.ProjectNotFoundException;
 import com.ust.sourcecourse.configuration.request.ProjectData;
 import com.ust.sourcecourse.configuration.response.ProjectInfo;
 import com.ust.sourcecourse.configuration.service.ProjectService;
@@ -52,10 +51,12 @@ public class ProjectController {
 	}
 
 	@DeleteMapping("/{uid}")
-	public ResponseEntity<Void> deleteProject(@PathVariable Long uid) {
-		projectService.deleteProject(uid);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).build();
-
+	public ResponseEntity<String> deleteProject(@PathVariable Long uid) {
+		try {
+			String message=projectService.deleteProject(uid);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(message);
+		} catch (ProjectNotFoundException ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+		}
 	}
-
 }
