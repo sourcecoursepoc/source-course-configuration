@@ -179,7 +179,7 @@ public class ProjectGroupService {
 
 	public List<ProjectGroupResponse> searchGroupsByTag(String tag) {
 		List<ProjectGroup> groups = projectGroupRepository.findAll();
-		List<ProjectGroupResponse>matchingGroups= groups.stream().filter(group -> group.getTags() != null && group.getTags().contains(tag))
+		List<ProjectGroupResponse> matchingGroups= groups.stream().filter(group -> group.getTags() != null && group.getTags().contains(tag))
 				.map(group -> getProjectGroupresponse(group)).collect(Collectors.toList());
 		if (matchingGroups.isEmpty()) {
 	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No project groups found with tag: " + tag);
