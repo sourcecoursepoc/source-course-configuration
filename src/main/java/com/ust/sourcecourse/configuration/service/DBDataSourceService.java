@@ -16,7 +16,7 @@ import com.ust.sourcecourse.configuration.entity.ConnectionInfo;
 import com.ust.sourcecourse.configuration.entity.DataSource;
 import com.ust.sourcecourse.configuration.entity.SourceColumn;
 import com.ust.sourcecourse.configuration.entity.SourceTable;
-import com.ust.sourcecourse.configuration.exceptions.ResourceNotFoundException;
+import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.repository.DataSourceRepository;
 import com.ust.sourcecourse.configuration.repository.SourceColumnRepository;
 import com.ust.sourcecourse.configuration.repository.SourceTableRepository;
