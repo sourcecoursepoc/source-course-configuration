@@ -85,7 +85,7 @@ public class DBDataSourceController {
 
 	@GetMapping("/column/search/{tag}")
 	public ResponseEntity<List<DBTableColumn>> searchColumnByTag(@PathVariable String tag) {
-		List<DBTableColumn> groups = dataSourceService.searchcolumnByTag(tag);
+		List<DBTableColumn> groups = dataSourceService.searchColumnsByTag(tag);
 		return ResponseEntity.ok(groups);
 	}
 	
