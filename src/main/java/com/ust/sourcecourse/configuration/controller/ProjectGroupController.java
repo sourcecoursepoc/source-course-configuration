@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,13 +22,12 @@ import com.ust.sourcecourse.configuration.service.ProjectGroupService;
 import jakarta.validation.Valid;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/project-groups")
 public class ProjectGroupController {
 
 	@Autowired
 	private ProjectGroupService projectGroupService;
-	
-	
 
 	/**
 	 * 
@@ -36,9 +36,9 @@ public class ProjectGroupController {
 	 */
 
 	@PostMapping
-	public ResponseEntity<List<ProjectGroupResponse>> createProjectGroup(
+	public ResponseEntity<ProjectGroupResponse> createProjectGroup(
 			@Valid @RequestBody ProjectGroupRequest projectGroupRequest) {
-		List<ProjectGroupResponse> projectGroupResponse = projectGroupService.createProjectGroup(projectGroupRequest);
+		ProjectGroupResponse projectGroupResponse = projectGroupService.createProjectGroup(projectGroupRequest);
 		return ResponseEntity.status(HttpStatus.CREATED.value()).body(projectGroupResponse);
 	}
 
@@ -48,8 +48,8 @@ public class ProjectGroupController {
 	 * @return
 	 */
 
-	@GetMapping("/{id}")
-	public ResponseEntity<ProjectGroupResponse> getProjectGroup(@PathVariable("id") Long id) {
+	@GetMapping("/{groupId}")
+	public ResponseEntity<ProjectGroupResponse> getProjectGroup(@PathVariable("groupId") Long id) {
 		ProjectGroupResponse projectGroupResponse = projectGroupService.getProjectGroup(id);
 		return ResponseEntity.ok(projectGroupResponse);
 	}
@@ -60,8 +60,9 @@ public class ProjectGroupController {
 	 * @return
 	 */
 
-	@GetMapping("/project/{id}")
-	public ResponseEntity<List<ProjectGroupResponse>> getProjectGroupsByProjectUid(@PathVariable("id") Long uid) {
+	@GetMapping("/project/{projectId}")
+	public ResponseEntity<List<ProjectGroupResponse>> getProjectGroupsByProjectUid(
+			@PathVariable("projectId") Long uid) {
 		List<ProjectGroupResponse> projectGroups = projectGroupService.findByProjectUid(uid);
 		if (!projectGroups.isEmpty()) {
 			return ResponseEntity.ok(projectGroups);
@@ -77,8 +78,8 @@ public class ProjectGroupController {
 	 * @return
 	 */
 
-	@PutMapping("/{id}")
-	public ResponseEntity<ProjectGroupResponse> updateProjectGroup(@PathVariable("id") Long id,
+	@PutMapping("/{groupId}")
+	public ResponseEntity<ProjectGroupResponse> updateProjectGroup(@PathVariable("groupId") Long id,
 			@RequestBody ProjectGroupRequest projectGroupRequest) {
 		ProjectGroupResponse updatedProjectGroup = projectGroupService.updateProjectGroup(id, projectGroupRequest);
 		return ResponseEntity.ok(updatedProjectGroup);
@@ -90,8 +91,8 @@ public class ProjectGroupController {
 	 * @param delete projectGroup
 	 * @return
 	 */
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteProjectGroup(@PathVariable("id") Long id) {
+	@DeleteMapping("/{groupId}")
+	public ResponseEntity<Void> deleteProjectGroup(@PathVariable("groupId") Long id) {
 		projectGroupService.deleteProjectGroup(id);
 		return ResponseEntity.noContent().build();
 	}
@@ -102,21 +103,22 @@ public class ProjectGroupController {
 	 * @param add  tags to project Group
 	 * @return
 	 */
-	@PostMapping("/{id}/tags")
-    public ResponseEntity<List<String>> addTagToProjectGroup(@PathVariable ("id") Long uid, @RequestBody  List<String> tags) {
-        List<String> updatedProjectGroup = projectGroupService.addTagToProjectGroup(uid, tags);
-        return ResponseEntity.ok(updatedProjectGroup);
-    }
+	@PostMapping("/{groupId}/tags")
+	public ResponseEntity<List<String>> addTagToProjectGroup(@PathVariable("groupId") Long uid,
+			@RequestBody List<String> tags) {
+		List<String> updatedProjectGroup = projectGroupService.addTagToProjectGroup(uid, tags);
+		return ResponseEntity.ok(updatedProjectGroup);
+	}
+
 	/**
 	 * 
 	 * @param
 	 * @param delete tag
 	 * @return
 	 */
-	
-	
-	@DeleteMapping("/{id}/tags/{tag}")
-	public ResponseEntity<String> removeTagFromProjectGroup(@PathVariable ("id")Long uid, @PathVariable String tag) {
+
+	@DeleteMapping("/{groupId}/tags/{tag}")
+	public ResponseEntity<String> removeTagFromProjectGroup(@PathVariable("groupId") Long uid, @PathVariable String tag) {
 		ResponseEntity<String> updatedProjectGroup = projectGroupService.removeTagFromProjectGroup(uid, tag);
 		if (updatedProjectGroup != null) {
 			return ResponseEntity.ok("Tag '" + tag + "' deleted successfully from project group with id " + uid);
@@ -124,32 +126,29 @@ public class ProjectGroupController {
 			return ResponseEntity.notFound().build();
 		}
 	}
-	
- /**
- * 
- * @param Get Tags by Group 
- * @return Tags
- */
-	
-	@GetMapping("/{id}/tags")
-	public ResponseEntity<List<String>> getTagsByGroup(@PathVariable ("id")Long uid) {
-	    List<String> tags = projectGroupService.getTagsByGroup(uid);
-	    return ResponseEntity.ok(tags);
+
+	/**
+	 * 
+	 * @param Get Tags by Group
+	 * @return Tags
+	 */
+
+	@GetMapping("/{groupId}/tags")
+	public ResponseEntity<List<String>> getTagsByGroup(@PathVariable("groupId") Long uid) {
+		List<String> tags = projectGroupService.getTagsByGroup(uid);
+		return ResponseEntity.ok(tags);
 	}
-	
+
 	/**
 	 * 
 	 * @param search Groups By Tag
 	 * @return
 	 */
-	
+
 	@GetMapping("/searchByTag/{tag}")
 	public ResponseEntity<List<ProjectGroupResponse>> searchGroupsByTag(@PathVariable String tag) {
-	    List<ProjectGroupResponse> groups = projectGroupService.searchGroupsByTag(tag);
-	    return ResponseEntity.ok(groups);
+		List<ProjectGroupResponse> groups = projectGroupService.searchGroupsByTag(tag);
+		return ResponseEntity.ok(groups);
 	}
-
-
-
 
 }
