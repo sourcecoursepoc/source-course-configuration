@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.ust.sourcecourse.configuration.entity.Project;
 import com.ust.sourcecourse.configuration.entity.ProjectGroup;
-import com.ust.sourcecourse.configuration.exceptions.ResourceNotFoundException;
+import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.repository.ProjectGroupRepository;
 import com.ust.sourcecourse.configuration.repository.ProjectRepository;
 import com.ust.sourcecourse.configuration.request.ProjectGroupRequest;
