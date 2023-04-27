@@ -92,6 +92,4 @@ public class SourceTable {
 	@OneToMany(mappedBy = "sourceTable")
 	private List<ProjectTable> projectTables;
 
-	
-
 }
