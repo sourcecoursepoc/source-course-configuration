@@ -18,12 +18,16 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "group_pipeline")
 @Data
-@Builder
+@Builder 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class GroupPipeline {
@@ -34,8 +38,8 @@ public class GroupPipeline {
 	private Long uid;
 
 	@OneToOne
-	@JoinColumn(name = "project_group_uid", referencedColumnName = "uid")
-	private ProjectGroup projectGroup;
+    @JoinColumn(name = "project_group_uid", referencedColumnName = "uid")
+    private ProjectGroup projectGroup;
 
 	@Column(name = "exportType")
 	private String exportType;
@@ -61,5 +65,6 @@ public class GroupPipeline {
 	@Column(name = "modified_timestamp")
 	@UpdateTimestamp
 	private LocalDateTime modifiedTimestamp;
+	
 
 }

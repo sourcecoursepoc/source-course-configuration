@@ -15,4 +15,8 @@ public class ResourceNotFoundException extends RuntimeException {
 	public ResourceNotFoundException(String message, String string, List<String> tags) {
 		
 	}
+
+	public ResourceNotFoundException(String string) {
+		// TODO Auto-generated constructor stub
+	}
 }
