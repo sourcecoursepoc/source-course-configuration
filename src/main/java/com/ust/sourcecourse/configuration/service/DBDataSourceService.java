@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import com.ust.sourcecourse.configuration.entity.ConnectionInfo;
 import com.ust.sourcecourse.configuration.entity.DataSource;
 import com.ust.sourcecourse.configuration.entity.SourceColumn;
 import com.ust.sourcecourse.configuration.entity.SourceTable;
-import com.ust.sourcecourse.configuration.exceptions.ResourceNotFoundException;
+import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.repository.DataSourceRepository;
 import com.ust.sourcecourse.configuration.repository.SourceColumnRepository;
 import com.ust.sourcecourse.configuration.repository.SourceTableRepository;
@@ -134,18 +135,22 @@ public class DBDataSourceService {
 	}
 
 	public List<DBTable> searchTablesByTag(String tag) {
-		List<SourceTable> sourcetables = sourceTableRepository.findAll();
-		return sourcetables.stream()
-				.filter(sourcetable -> sourcetable.getTags() != null && sourcetable.getTags().contains(tag))
-				.map(sourcetable -> getDBTable(sourcetable)).collect(Collectors.toList());
+
+		List<SourceTable> sourceTables = new ArrayList<>();
+		if (StringUtils.isNotBlank(tag)) {
+			sourceTables = sourceTableRepository.retrieveByTag(tag.toLowerCase());
+		}
+		return sourceTables.stream().map(sourcetable -> getDBTable(sourcetable)).collect(Collectors.toList());
 	}
 
-	public List<DBTableColumn> searchcolumnByTag(String tag) {
-		List<SourceColumn> sourcecolumns = sourceColumnRepository.findAll();
-		return sourcecolumns.stream()
-				.filter(sourcecolumn -> sourcecolumn.getTags() != null && sourcecolumn.getTags().contains(tag))
-				.map(sourcecolumn -> getDBTableColumn1(sourcecolumn)).collect(Collectors.toList());
+	public List<DBTableColumn> searchColumnsByTag(String tag) {
 
+		List<SourceColumn> sourceColumns = new ArrayList<>();
+		if (StringUtils.isNotBlank(tag)) {
+			sourceColumns = sourceColumnRepository.retrieveByTag(tag.toLowerCase());
+
+		}
+		return sourceColumns.stream().map(SourceColumn -> getDBTableColumn1(SourceColumn)).collect(Collectors.toList());
 	}
 
 	public List<String> addTagSourceTable(Long uid, List<String> tags, String description) {
