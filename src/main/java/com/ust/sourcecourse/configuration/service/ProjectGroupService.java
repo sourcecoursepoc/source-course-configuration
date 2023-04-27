@@ -63,7 +63,7 @@ public class ProjectGroupService {
 	public List<ProjectGroupResponse> findByProjectUid(Long uid) {
 		List<ProjectGroup> projectGroups = projectGroupRepository.findByProjectUid(uid);
 		if (projectGroups.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project groups not found for project UID: " + uid);
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Project groups not found for project UID: " + uid);
 		}
 		return projectGroups.stream().map(projectGroup -> getProjectGroupresponse(projectGroup)).toList();
 	}
@@ -182,7 +182,7 @@ public class ProjectGroupService {
 		List<ProjectGroupResponse> matchingGroups= groups.stream().filter(group -> group.getTags() != null && group.getTags().contains(tag))
 				.map(group -> getProjectGroupresponse(group)).collect(Collectors.toList());
 		if (matchingGroups.isEmpty()) {
-	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No project groups found with tag: " + tag);
+	        throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No project groups found with tag: " + tag);
 	    }
 	    return matchingGroups;
 	}
