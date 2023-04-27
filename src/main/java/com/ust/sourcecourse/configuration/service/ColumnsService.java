@@ -131,7 +131,6 @@ public class ColumnsService {
 	    		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group column with uid " + columnId + " not found");
 	    		
 	    	}	
-	
 }
 
 	public void deleteData(Long columnId) {
