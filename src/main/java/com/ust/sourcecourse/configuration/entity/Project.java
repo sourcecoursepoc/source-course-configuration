@@ -1,7 +1,6 @@
 package com.ust.sourcecourse.configuration.entity;
 
 import java.time.LocalDateTime;
-
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -62,7 +61,5 @@ public class Project {
 
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	private List<ProjectGroup> groups;
-
-	
 
 }
