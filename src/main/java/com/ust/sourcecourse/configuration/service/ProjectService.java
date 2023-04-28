@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.ust.sourcecourse.configuration.entity.Project;
+import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.repository.ProjectRepository;
 import com.ust.sourcecourse.configuration.request.ProjectData;
 import com.ust.sourcecourse.configuration.response.ProjectInfo;
@@ -20,6 +21,7 @@ public class ProjectService {
 	private ProjectRepository projectRepository;
 
 	public ProjectInfo createProject(ProjectData projectData) {
+				
 		Project project = Project.builder().name(projectData.getName()).description(projectData.getDescription())
 				.build();
 		project = projectRepository.save(project);
@@ -42,23 +44,27 @@ public class ProjectService {
 		return projects.stream().map(project -> getProjectInfo(project)).toList();
 	}
 
-	public void deleteProject(Long uid) {
+	public String deleteProject(Long uid) {
+
+		Project project = projectRepository.findById(uid)
+				.orElseThrow(() -> new ResourceNotFoundException("Project Id " + uid + " not found "));
 		projectRepository.deleteById(uid);
+		return "Project with ID " + uid + " has been deleted.";
 	}
 
 	public ProjectInfo updateProject(Long uid, ProjectData projectData) {
-		// TODO Auto-generated method stub
-		Optional<Project> optionalProject = projectRepository.findById(uid);
-        if (optionalProject.isPresent()) {
-            Project project = optionalProject.get();
-            project.setName(projectData.getName());
-            project.setDescription(projectData.getDescription());
-            project = projectRepository.save(project);
-            return getProjectInfo(project);
-        } else {
-        	throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project with this id is not present"+uid);
-        }
 		
+		Optional<Project> optionalProject = projectRepository.findById(uid);
+		if (optionalProject.isPresent()) {
+			Project project = optionalProject.get();
+			project.setName(projectData.getName());
+			project.setDescription(projectData.getDescription());
+			project = projectRepository.save(project);
+			return getProjectInfo(project);
+		} else {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project id  with " +uid+ " is not present");
+		}
+
 	}
 
 }

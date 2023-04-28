@@ -1,12 +1,11 @@
 package com.ust.sourcecourse.configuration.controller;
 
-
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +22,7 @@ import com.ust.sourcecourse.configuration.service.ProjectService;
 import jakarta.validation.Valid;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/project")
 public class ProjectController {
 
@@ -53,15 +53,15 @@ public class ProjectController {
 	}
 
 	@DeleteMapping("/{uid}")
-	public ResponseEntity<Void> deleteProject(@PathVariable Long uid) {
-		projectService.deleteProject(uid);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).build();
-
+	public ResponseEntity<String> deleteProject(@PathVariable Long uid) {
+			String message = projectService.deleteProject(uid);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(message);
 	}
+
 	@PutMapping("/{uid}")
-    public ResponseEntity<ProjectInfo> updateProject(@PathVariable Long uid, @RequestBody ProjectData projectData) {
-		ProjectInfo projectInfo  = projectService.updateProject(uid, projectData);
-      return ResponseEntity.ok(projectInfo);
-    }
+	public ResponseEntity<ProjectInfo> updateProject(@PathVariable Long uid, @RequestBody ProjectData projectData) {
+		ProjectInfo projectInfo = projectService.updateProject(uid, projectData);
+		return ResponseEntity.ok(projectInfo);
+	}
 
 }

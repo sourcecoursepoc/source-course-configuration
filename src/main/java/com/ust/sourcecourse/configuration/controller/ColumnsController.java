@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,11 +19,9 @@ import com.ust.sourcecourse.configuration.request.ColumnsRequest;
 import com.ust.sourcecourse.configuration.response.ColumnsResponse;
 import com.ust.sourcecourse.configuration.service.ColumnsService;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/columns")
-@Slf4j
 public class ColumnsController {
 	@Autowired
 
@@ -44,7 +43,6 @@ public class ColumnsController {
 			return ResponseEntity.ok(savedata);
 		} catch (Exception e) {
 			e.printStackTrace();
-//			log.error("Error : ", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
@@ -65,12 +63,10 @@ public class ColumnsController {
 			return ResponseEntity.noContent().build();
 		}catch (Exception e) {
 			e.printStackTrace();
-//			log.error("Error :",e);
-			
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-	
+
 }
 	
 
