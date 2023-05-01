@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.ust.sourcecourse.configuration.exception.CustomException.ResourceAlreadyExistsException;
+
 @RestControllerAdvice
 public class ExceptionHandlerController {
-	
 
 	@ExceptionHandler(ResponseStatusException.class)
 	public ResponseEntity<ErrorResponse> handleResponseStatusException(ResponseStatusException ex) {
@@ -61,12 +62,26 @@ public class ExceptionHandlerController {
 	 * @param ex
 	 * @return
 	 */
-	@ExceptionHandler(ResourceNotFoundException.class)
+	@ExceptionHandler(CustomException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ResponseBody
-	public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+	public ResponseEntity<ErrorResponse> handleResourceNotFoundException(CustomException ex) {
 		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+	}
+
+	/**
+	 * project already exists
+	 * 
+	 * @param ex
+	 * @return
+	 */
+	@ExceptionHandler(ResourceAlreadyExistsException.class)
+	@ResponseStatus(HttpStatus.CONFLICT)
+	@ResponseBody
+	public ResponseEntity<ErrorResponse> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex) {
+		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
 	}
 
 	/**
@@ -84,9 +99,8 @@ public class ExceptionHandlerController {
 	public ResponseEntity<ErrorResponse> handleDatabaseException(Exception ex) {
 		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-		
+
 	}
-	
 
 	public static class ErrorResponse {
 		private int status;

@@ -1,6 +1,8 @@
 
 package com.ust.sourcecourse.configuration.entity;
 
+
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,8 +32,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "source_table")
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+
 public class SourceTable {
 
 	@Id

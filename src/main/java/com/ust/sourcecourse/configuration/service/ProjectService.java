@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.ust.sourcecourse.configuration.entity.Project;
-import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
+import com.ust.sourcecourse.configuration.exception.CustomException;
+import com.ust.sourcecourse.configuration.exception.CustomException.ResourceAlreadyExistsException;
 import com.ust.sourcecourse.configuration.repository.ProjectRepository;
 import com.ust.sourcecourse.configuration.request.ProjectData;
 import com.ust.sourcecourse.configuration.response.ProjectInfo;
@@ -21,7 +22,11 @@ public class ProjectService {
 	private ProjectRepository projectRepository;
 
 	public ProjectInfo createProject(ProjectData projectData) {
-				
+		
+		Optional<Project> existingProject = projectRepository.findByName(projectData.getName());
+	    if (existingProject.isPresent()) {
+	        throw new ResourceAlreadyExistsException("Project with name " + projectData.getName() + " already exists");
+	    }
 		Project project = Project.builder().name(projectData.getName()).description(projectData.getDescription())
 				.build();
 		project = projectRepository.save(project);
@@ -47,7 +52,7 @@ public class ProjectService {
 	public String deleteProject(Long uid) {
 
 		Project project = projectRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("Project Id " + uid + " not found "));
+				.orElseThrow(() -> new CustomException("Project Id " + uid + " not found "));
 		projectRepository.deleteById(uid);
 		return "Project with ID " + uid + " has been deleted.";
 	}

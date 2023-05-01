@@ -15,7 +15,7 @@ import com.ust.sourcecourse.configuration.entity.ConnectionInfo;
 import com.ust.sourcecourse.configuration.entity.DataSource;
 import com.ust.sourcecourse.configuration.entity.SourceColumn;
 import com.ust.sourcecourse.configuration.entity.SourceTable;
-import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
+import com.ust.sourcecourse.configuration.exception.CustomException;
 import com.ust.sourcecourse.configuration.repository.DataSourceRepository;
 import com.ust.sourcecourse.configuration.repository.SourceColumnRepository;
 import com.ust.sourcecourse.configuration.repository.SourceTableRepository;
@@ -97,19 +97,19 @@ public class DBDataSourceService {
 
 	public List<String> getTagsByColumn(Long uid) {
 		SourceColumn sourceColumn = sourceColumnRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("SourceColumn", "id", uid));
+				.orElseThrow(() -> new CustomException.ResourceNotFoundException("SourceColumn for given table not found", "id", uid));
 		return sourceColumn.getTags();
 	}
 
 	public List<String> getTagsByTable(Long uid) {
 		SourceTable sourceTable = sourceTableRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("SourceTable", "id", uid));
+				.orElseThrow(() -> new CustomException.ResourceNotFoundException("SourceTable with uid " + uid + " not found"));
 		return sourceTable.getTags();
 	}
 
 	public ResponseEntity<String> removeTagFromSourceColumn(Long uid, String tag) {
 		SourceColumn updatedSourceColumn = sourceColumnRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("SourceColumn", "id", uid));
+				.orElseThrow(() -> new CustomException.ResourceNotFoundException("SourceColumn", "id", uid));
 		List<String> tags = updatedSourceColumn.getTags();
 		if (tags.remove(tag)) {
 			updatedSourceColumn.setTags(tags);
@@ -122,7 +122,7 @@ public class DBDataSourceService {
 
 	public ResponseEntity<String> removeTagFromSourceTable(Long uid, String tag) {
 		SourceTable updatedSourcetable = sourceTableRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("SourceTable", "id", uid));
+				.orElseThrow(() -> new CustomException.ResourceNotFoundException("SourceTable", "id", uid));
 		List<String> tags = updatedSourcetable.getTags();
 		if (tags.remove(tag)) {
 			updatedSourcetable.setTags(tags);
@@ -135,22 +135,37 @@ public class DBDataSourceService {
 
 	public List<DBTable> searchTablesByTag(String tag) {
 		List<SourceTable> sourcetables = sourceTableRepository.findAll();
-		return sourcetables.stream()
-				.filter(sourcetable -> sourcetable.getTags() != null && sourcetable.getTags().contains(tag))
-				.map(sourcetable -> getDBTable(sourcetable)).collect(Collectors.toList());
+		if (sourcetables.isEmpty()) {
+			throw new CustomException("No tables found in the database.");
+		}
+
+		List<DBTable> result = sourcetables.stream()
+				.filter(sourceTable -> sourceTable.getTags() != null && sourceTable.getTags().contains(tag))
+				.map(sourceTable -> getDBTable(sourceTable)).collect(Collectors.toList());
+		if (result.isEmpty()) {
+			throw new CustomException("No tables found with tag '" + tag + "'.");
+		}
+		return result;
 	}
 
 	public List<DBTableColumn> searchcolumnByTag(String tag) {
 		List<SourceColumn> sourcecolumns = sourceColumnRepository.findAll();
-		return sourcecolumns.stream()
+		if (sourcecolumns.isEmpty()) {
+			throw new CustomException("No tables found in the database.");
+		}
+		
+			List<DBTableColumn> result1 =sourcecolumns.stream()
 				.filter(sourcecolumn -> sourcecolumn.getTags() != null && sourcecolumn.getTags().contains(tag))
 				.map(sourcecolumn -> getDBTableColumn1(sourcecolumn)).collect(Collectors.toList());
-
+			if (result1.isEmpty()) {
+				throw new CustomException("No tables found with column tag '" + tag + "'.");
+			}
+			return result1;
 	}
 
 	public List<String> addTagSourceTable(Long uid, List<String> tags, String description) {
 		SourceTable sourceTable = sourceTableRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("sourcetable", "id", uid));
+				.orElseThrow(() -> new CustomException.ResourceNotFoundException("sourcetable", "id", uid));
 
 		List<String> tagList = sourceTable.getTags();
 		if (tagList == null) {
@@ -169,7 +184,10 @@ public class DBDataSourceService {
 
 	public List<String> addTagSourceColumn(Long uid, List<String> tags, String description) {
 		SourceColumn sourceColumn = sourceColumnRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("sourceColumn", "id", uid));
+				.orElseThrow(() -> new CustomException.ResourceNotFoundException("sourceColumn", "id", uid));
+		if (description == null || tags == null) {
+			throw new IllegalArgumentException("Description and tags cannot be null");
+		}
 
 		List<String> tagList = sourceColumn.getTags();
 		if (tagList == null) {

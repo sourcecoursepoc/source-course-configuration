@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.ust.sourcecourse.configuration.entity.Project;
 import com.ust.sourcecourse.configuration.entity.ProjectGroup;
-import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
+import com.ust.sourcecourse.configuration.exception.CustomException;
 import com.ust.sourcecourse.configuration.repository.ProjectGroupRepository;
 import com.ust.sourcecourse.configuration.repository.ProjectRepository;
 import com.ust.sourcecourse.configuration.request.ProjectGroupRequest;
@@ -128,7 +128,7 @@ public class ProjectGroupService {
 
 	public List<String> addTagToProjectGroup(Long uid, List<String> tags) {
 		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("ProjectGroup with the given Id not found", "id", uid));
+				.orElseThrow(() -> new CustomException.ResourceNotFoundException("ProjectGroup with the given Id not found", "id", uid));
 		List<String> tag = projectGroup.getTags();
 		if (tag == null) {
 			tag = new ArrayList<>();
@@ -148,7 +148,7 @@ public class ProjectGroupService {
 
 	public ResponseEntity<String> removeTagFromProjectGroup(Long uid, String tag) {
 		ProjectGroup updatedProjectGroup = projectGroupRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("ProjectGroup", "id", uid));
+				.orElseThrow(() -> new CustomException.ResourceNotFoundException("ProjectGroup", "id", uid));
 		List<String> tags = updatedProjectGroup.getTags();
 		if (tags.remove(tag)) {
 			updatedProjectGroup.setTags(tags);
@@ -167,7 +167,7 @@ public class ProjectGroupService {
 
 	public List<String> getTagsByGroup(Long uid) {
 		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("ProjectGroup Id with " +uid +" not found", "id", uid));
+				.orElseThrow(() -> new CustomException.ResourceNotFoundException("ProjectGroup Id with " +uid +" not found", "id", uid));
 		return projectGroup.getTags();
 	}
 
