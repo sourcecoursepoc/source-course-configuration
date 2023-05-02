@@ -142,6 +142,10 @@ public class DBDataSourceService {
 		if (StringUtils.isNotBlank(tag)) {
 			sourceTables = sourceTableRepository.retrieveByTag(tag.toLowerCase());
 		}
+
+		if (sourceTables.isEmpty()) {
+			throw new ResourceNotFoundException("No tables found with the given tag.");
+		}
 		return sourceTables.stream().map(sourcetable -> getDBTable(sourcetable)).collect(Collectors.toList());
 	}
 
@@ -151,6 +155,9 @@ public class DBDataSourceService {
 		if (StringUtils.isNotBlank(tag)) {
 			sourceColumns = sourceColumnRepository.retrieveByTag(tag.toLowerCase());
 
+		}
+		if (sourceColumns.isEmpty()) {
+			throw new ResourceNotFoundException("No tables found with the given tag.");
 		}
 		return sourceColumns.stream().map(SourceColumn -> getDBTableColumn1(SourceColumn)).collect(Collectors.toList());
 
