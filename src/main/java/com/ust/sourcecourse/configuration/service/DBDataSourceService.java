@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -136,36 +137,31 @@ public class DBDataSourceService {
 	}
 
 	public List<DBTable> searchTablesByTag(String tag) {
-		List<SourceTable> sourcetables = sourceTableRepository.findAll();
-		if (sourcetables.isEmpty()) {
-			 throw new ResponseStatusException(HttpStatus.NO_CONTENT,"No tables found in the database.");
-		}
 
-		List<DBTable> result = sourcetables.stream()
-				.filter(sourceTable -> sourceTable.getTags() != null && sourceTable.getTags().contains(tag))
-				.map(sourceTable -> getDBTable(sourceTable)).collect(Collectors.toList());
-		if (result.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NO_CONTENT,"No tables found with tag '" + tag + "'.");
+		List<SourceTable> sourceTables = new ArrayList<>();
+		if (StringUtils.isNotBlank(tag)) {
+			sourceTables = sourceTableRepository.retrieveByTag(tag.toLowerCase());
 		}
-		return result;
+		return sourceTables.stream().map(sourcetable -> getDBTable(sourcetable)).collect(Collectors.toList());
 	}
 
-	public List<DBTableColumn> searchcolumnByTag(String tag) {
-		List<SourceColumn> sourcecolumns = sourceColumnRepository.findAll();
-		if (sourcecolumns.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NO_CONTENT,"No tables found in the database.");
+	public List<DBTableColumn> searchColumnsByTag(String tag) {
+
+		List<SourceColumn> sourceColumns = new ArrayList<>();
+		if (StringUtils.isNotBlank(tag)) {
+			sourceColumns = sourceColumnRepository.retrieveByTag(tag.toLowerCase());
+
 		}
-			return sourcecolumns.stream()
-				.filter(sourcecolumn -> sourcecolumn.getTags() != null && sourcecolumn.getTags().contains(tag))
-				.map(sourcecolumn -> getDBTableColumn1(sourcecolumn)).collect(Collectors.toList());
+		return sourceColumns.stream().map(SourceColumn -> getDBTableColumn1(SourceColumn)).collect(Collectors.toList());
+
 	}
 
 	public List<String> addTagSourceTable(Long uid, List<String> tags, String description) {
 		SourceTable sourceTable = sourceTableRepository.findById(uid)
 				.orElseThrow(() -> new ResourceNotFoundException("sourcetable", "id", uid));
 		if (tags == null) {
-	        throw new IllegalArgumentException("tags must not be null");
-	    }
+			throw new IllegalArgumentException("tags must not be null");
+		}
 
 		List<String> tagList = sourceTable.getTags();
 		if (tagList == null) {
@@ -186,8 +182,8 @@ public class DBDataSourceService {
 		SourceColumn sourceColumn = sourceColumnRepository.findById(uid)
 				.orElseThrow(() -> new ResourceNotFoundException("sourceColumn ", "id", uid));
 		if (tags == null) {
-	        throw new IllegalArgumentException("tags must not be null");
-	    }
+			throw new IllegalArgumentException("tags must not be null");
+		}
 		List<String> tagList = sourceColumn.getTags();
 		if (tagList == null) {
 			tagList = new ArrayList<>();
