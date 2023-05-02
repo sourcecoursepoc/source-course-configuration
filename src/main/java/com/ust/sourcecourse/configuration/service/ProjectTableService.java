@@ -132,7 +132,7 @@ public class ProjectTableService {
 			}
 		}
 		if (deletedUid.isEmpty()) {
-            throw new CustomException("No project Id found for the given request");
+            throw new CustomException.ResourceNotFoundException("No project Id found for the given request");
         }
 		projectTableRepository.deleteAllById(deletedUid);
 		return deletedUid;
