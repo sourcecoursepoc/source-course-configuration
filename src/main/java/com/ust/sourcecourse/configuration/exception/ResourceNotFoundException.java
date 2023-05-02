@@ -3,6 +3,9 @@ package com.ust.sourcecourse.configuration.exception;
 import java.util.List;
 
 public class ResourceNotFoundException extends RuntimeException {
+	/**
+	 * 
+	 */
 
 	private static final long serialVersionUID = 1L;
 

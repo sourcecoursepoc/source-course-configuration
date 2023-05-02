@@ -163,6 +163,9 @@ public class DBDataSourceService {
 	public List<String> addTagSourceTable(Long uid, List<String> tags, String description) {
 		SourceTable sourceTable = sourceTableRepository.findById(uid)
 				.orElseThrow(() -> new ResourceNotFoundException("sourcetable", "id", uid));
+		if (tags == null) {
+	        throw new IllegalArgumentException("tags must not be null");
+	    }
 
 		List<String> tagList = sourceTable.getTags();
 		if (tagList == null) {
@@ -182,10 +185,9 @@ public class DBDataSourceService {
 	public List<String> addTagSourceColumn(Long uid, List<String> tags, String description) {
 		SourceColumn sourceColumn = sourceColumnRepository.findById(uid)
 				.orElseThrow(() -> new ResourceNotFoundException("sourceColumn ", "id", uid));
-		if (description == null || tags == null) {
-			throw new IllegalArgumentException("Description and tags cannot be null");
-		}
-
+		if (tags == null) {
+	        throw new IllegalArgumentException("tags must not be null");
+	    }
 		List<String> tagList = sourceColumn.getTags();
 		if (tagList == null) {
 			tagList = new ArrayList<>();
