@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.ust.sourcecourse.configuration.entity.GroupColumn;
 import com.ust.sourcecourse.configuration.entity.ProjectGroup;
 import com.ust.sourcecourse.configuration.entity.SourceColumn;
-import com.ust.sourcecourse.configuration.exception.CustomException;
+import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.repository.GroupColumnRepository;
 import com.ust.sourcecourse.configuration.repository.ProjectGroupRepository;
 import com.ust.sourcecourse.configuration.repository.SourceColumnRepository;
@@ -128,7 +128,7 @@ public class ColumnsService {
 
 	public void deleteData(Long columnId) {
 		GroupColumn existingColumn = groupColumnRepository.findById(columnId)
-	            .orElseThrow(() -> new CustomException.ResourceNotFoundException("Column with ID " + columnId + " not found"));
+	            .orElseThrow(() -> new ResourceNotFoundException("Column with ID " + columnId + " not found"));
 	    groupColumnRepository.delete(existingColumn);
 
 	}

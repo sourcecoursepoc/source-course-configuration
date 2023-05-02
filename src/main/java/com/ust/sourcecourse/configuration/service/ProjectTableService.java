@@ -12,7 +12,7 @@ import com.ust.sourcecourse.configuration.entity.Project;
 import com.ust.sourcecourse.configuration.entity.ProjectTable;
 import com.ust.sourcecourse.configuration.entity.SourceColumn;
 import com.ust.sourcecourse.configuration.entity.SourceTable;
-import com.ust.sourcecourse.configuration.exception.CustomException;
+import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.repository.ProjectRepository;
 import com.ust.sourcecourse.configuration.repository.ProjectTableRepository;
 import com.ust.sourcecourse.configuration.repository.SourceTableRepository;
@@ -119,7 +119,7 @@ public class ProjectTableService {
 	 * @param sourceId
 	 */
 
-	public List<Long> deleteProjectTable(ProjectTableRequest projTableReq) throws CustomException{
+	public List<Long> deleteProjectTable(ProjectTableRequest projTableReq) throws ResourceNotFoundException{
 
 		List<ProjectTable> projectTableList = projectTableRepository.findByProjectUid(projTableReq.getProjectUid());
 		List<Long> deletedUid = new ArrayList<>();
@@ -132,7 +132,7 @@ public class ProjectTableService {
 			}
 		}
 		if (deletedUid.isEmpty()) {
-            throw new CustomException.ResourceNotFoundException("No project Id found for the given request");
+            throw new ResourceNotFoundException("No project Id found for the given request");
         }
 		projectTableRepository.deleteAllById(deletedUid);
 		return deletedUid;

@@ -21,7 +21,7 @@ public class HomeService {
 	public List<HomePageResponse> getHomePageDetails() {
 		List<Project> projects = projectRepository.findAll();
 		if (projects.isEmpty()) {
-	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No projects found");
+	        throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No projects found");
 	    }
 		List<HomePageResponse> homePageResponses = new ArrayList<>();
 		for (Project project : projects) {

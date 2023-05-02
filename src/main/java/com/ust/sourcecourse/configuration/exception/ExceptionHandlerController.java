@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.ust.sourcecourse.configuration.exception.CustomException.ResourceAlreadyExistsException;
-
 @RestControllerAdvice
 public class ExceptionHandlerController {
 
@@ -62,10 +60,10 @@ public class ExceptionHandlerController {
 	 * @param ex
 	 * @return
 	 */
-	@ExceptionHandler(CustomException.class)
+	@ExceptionHandler(ResourceNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ResponseBody
-	public ResponseEntity<ErrorResponse> handleResourceNotFoundException(CustomException ex) {
+	public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
 		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 	}
