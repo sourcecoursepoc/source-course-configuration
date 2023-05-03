@@ -142,10 +142,10 @@ public class DBDataSourceService {
 		if (StringUtils.isNotBlank(tag)) {
 			sourceTables = sourceTableRepository.retrieveByTag(tag.toLowerCase());
 		}
-
 		if (sourceTables.isEmpty()) {
-			throw new ResourceNotFoundException("No tables found with the given tag.");
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No tables found with the given tag.");
 		}
+
 		return sourceTables.stream().map(sourcetable -> getDBTable(sourcetable)).collect(Collectors.toList());
 	}
 
@@ -154,10 +154,9 @@ public class DBDataSourceService {
 		List<SourceColumn> sourceColumns = new ArrayList<>();
 		if (StringUtils.isNotBlank(tag)) {
 			sourceColumns = sourceColumnRepository.retrieveByTag(tag.toLowerCase());
-
 		}
 		if (sourceColumns.isEmpty()) {
-			throw new ResourceNotFoundException("No tables found with the given tag.");
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No tables found with the given tag.");
 		}
 		return sourceColumns.stream().map(SourceColumn -> getDBTableColumn1(SourceColumn)).collect(Collectors.toList());
 
@@ -166,15 +165,17 @@ public class DBDataSourceService {
 	public List<String> addTagSourceTable(Long uid, List<String> tags, String description) {
 		SourceTable sourceTable = sourceTableRepository.findById(uid)
 				.orElseThrow(() -> new ResourceNotFoundException("sourcetable", "id", uid));
-		if (tags == null) {
-			throw new IllegalArgumentException("tags must not be null");
+		if (tags == null && description == null) {
+			throw new IllegalArgumentException("Both Tags and description must not be empty");
 		}
 
 		List<String> tagList = sourceTable.getTags();
 		if (tagList == null) {
 			tagList = new ArrayList<>();
 		}
+		if(tags!=null) {
 		tagList.addAll(tags);
+		}
 		Set<String> tagSet = new LinkedHashSet<>(tagList);
 		sourceTable.setTags(new ArrayList<>(tagSet));
 
@@ -188,14 +189,16 @@ public class DBDataSourceService {
 	public List<String> addTagSourceColumn(Long uid, List<String> tags, String description) {
 		SourceColumn sourceColumn = sourceColumnRepository.findById(uid)
 				.orElseThrow(() -> new ResourceNotFoundException("sourceColumn ", "id", uid));
-		if (tags == null) {
-			throw new IllegalArgumentException("tags must not be null");
+		if (description == null && tags == null) {
+			throw new IllegalArgumentException("Both Tags and description must not be empty");
 		}
 		List<String> tagList = sourceColumn.getTags();
 		if (tagList == null) {
 			tagList = new ArrayList<>();
 		}
-		tagList.addAll(tags);
+		if (tags != null) {
+			tagList.addAll(tags);
+		}
 		Set<String> tagSet = new LinkedHashSet<>(tagList);
 		sourceColumn.setTags(new ArrayList<>(tagSet));
 
