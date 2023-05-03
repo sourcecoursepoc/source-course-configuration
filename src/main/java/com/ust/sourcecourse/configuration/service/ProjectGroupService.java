@@ -1,6 +1,7 @@
 package com.ust.sourcecourse.configuration.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,8 @@ public class ProjectGroupService {
 	 * @param projectGroupRequest
 	 * @return
 	 */
-	public ProjectGroupResponse createProjectGroup(ProjectGroupRequest projectGroupRequest) {
+	public List<ProjectGroupResponse> createProjectGroup(ProjectGroupRequest projectGroupRequest) {
+
 		Long uid = projectGroupRequest.getProjectUid();
 		Project project = projectRepository.findById(uid)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -45,7 +47,7 @@ public class ProjectGroupService {
 				.build();
 
 		projectgrp = projectGroupRepository.save(projectgrp);
-		return getProjectGroupresponse(projectgrp);
+		return Collections.singletonList(getProjectGroupresponse(projectgrp));
 	}
 
 	private ProjectGroupResponse getProjectGroupresponse(ProjectGroup projectgrp) {
@@ -137,6 +139,8 @@ public class ProjectGroupService {
 		return projectGroup.getTags();
 	}
 
+	
+
 	/**
 	 * 
 	 * @param delete tags
@@ -181,4 +185,3 @@ public class ProjectGroupService {
 	}
 
 }
-

@@ -125,42 +125,6 @@ public class ColumnsService {
 		}
 	}
 
-	groupColumn.setType(columnsRequest.getType());
-	groupColumn.setPrimary(columnsRequest.isPrimary());
-	groupColumn.setDefaultValue(columnsRequest.getDefaultvalue());
-	groupColumn.setSuffix(columnsRequest.getSuffix());
-	groupColumn.setPrefix(columnsRequest.getPreffix());
-	if(groupColumn.getUid().equals(columnId))
-
-	{
-		SourceColumn sourceColumn = columnsRepository.findById(columnsRequest.getSourceColumnUid()).orElseThrow();
-		groupColumn.setSourceColumn(sourceColumn);
-
-	}
-	groupColumnRepository.save(groupColumn);
-	AttributesInfo attributesInfo = new AttributesInfo();
-	attributesInfo.setName(groupColumn.getName());
-	attributesInfo.setNotes(groupColumn.getNotes());
-	attributesInfo.setType(groupColumn.getType());
-	attributesInfo.setPrimary(groupColumn.isPrimary());
-	attributesInfo.setDefaultValue(groupColumn.getDefaultValue());
-	attributesInfo.setPrefix(groupColumn.getPrefix());
-	attributesInfo.setSuffix(groupColumn.getSuffix());
-	SourceInfo SourceInfo = new SourceInfo(groupColumn.getSourceColumn().getName(),
-			groupColumn.getSourceColumn().getUid());
-
-	ColumnsResponse columnsResponse = new ColumnsResponse(groupColumn.getUid(), attributesInfo, SourceInfo);
-
-	return columnsResponse;
-	}
-else
-	{
-		throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Group column with uid "+columnId+" not found");
-
-	}
-
-	}
-
 	public void deleteData(Long columnId) {
 		groupColumnRepository.deleteById(columnId);
 
