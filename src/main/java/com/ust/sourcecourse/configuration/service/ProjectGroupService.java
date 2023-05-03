@@ -1,6 +1,6 @@
 package com.ust.sourcecourse.configuration.service;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -15,12 +15,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.ust.sourcecourse.configuration.entity.Project;
 import com.ust.sourcecourse.configuration.entity.ProjectGroup;
-import com.ust.sourcecourse.configuration.exceptions.ResourceNotFoundException;
+import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.repository.ProjectGroupRepository;
 import com.ust.sourcecourse.configuration.repository.ProjectRepository;
 import com.ust.sourcecourse.configuration.request.ProjectGroupRequest;
 import com.ust.sourcecourse.configuration.response.ProjectGroupResponse;
-import java.util.ArrayList;
 
 @Service
 public class ProjectGroupService {
@@ -36,8 +35,7 @@ public class ProjectGroupService {
 	 * @param projectGroupRequest
 	 * @return
 	 */
-	public List<ProjectGroupResponse> createProjectGroup(ProjectGroupRequest projectGroupRequest) {
-
+	public ProjectGroupResponse createProjectGroup(ProjectGroupRequest projectGroupRequest) {
 		Long uid = projectGroupRequest.getProjectUid();
 		Project project = projectRepository.findById(uid)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -47,7 +45,7 @@ public class ProjectGroupService {
 				.build();
 
 		projectgrp = projectGroupRepository.save(projectgrp);
-		return Collections.singletonList(getProjectGroupresponse(projectgrp));
+		return getProjectGroupresponse(projectgrp);
 	}
 
 	private ProjectGroupResponse getProjectGroupresponse(ProjectGroup projectgrp) {
@@ -138,8 +136,6 @@ public class ProjectGroupService {
 		projectGroupRepository.save(projectGroup);
 		return projectGroup.getTags();
 	}
-
-	
 
 	/**
 	 * 
