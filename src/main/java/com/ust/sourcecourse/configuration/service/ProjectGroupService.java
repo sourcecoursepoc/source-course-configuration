@@ -62,6 +62,9 @@ public class ProjectGroupService {
 
 	public List<ProjectGroupResponse> findByProjectUid(Long uid) {
 		List<ProjectGroup> projectGroups = projectGroupRepository.findByProjectUid(uid);
+		if (projectGroups.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Project groups not found for project UID: " + uid);
+		}
 		return projectGroups.stream().map(projectGroup -> getProjectGroupresponse(projectGroup)).toList();
 	}
 
@@ -113,19 +116,19 @@ public class ProjectGroupService {
 			projectGroupRepository.delete(existingProjectGroup.get());
 			return true;
 		} else {
-			return false;
+			 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project group not found with UID: " + uid);
 		}
 	}
 
 	/**
 	 * 
 	 * @param Add tags
-	 * @return
+	 * @return 
 	 */
 
 	public List<String> addTagToProjectGroup(Long uid, List<String> tags) {
 		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("ProjectGroup", "id", uid));
+				.orElseThrow(() -> new ResourceNotFoundException("ProjectGroup with the given Id not found", "id", uid));
 		List<String> tag = projectGroup.getTags();
 		if (tag == null) {
 			tag = new ArrayList<>();
@@ -164,7 +167,7 @@ public class ProjectGroupService {
 
 	public List<String> getTagsByGroup(Long uid) {
 		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("ProjectGroup", "id", uid));
+				.orElseThrow(() -> new ResourceNotFoundException("ProjectGroup Id with " +uid +" not found", "id", uid));
 		return projectGroup.getTags();
 	}
 
@@ -176,8 +179,12 @@ public class ProjectGroupService {
 
 	public List<ProjectGroupResponse> searchGroupsByTag(String tag) {
 		List<ProjectGroup> groups = projectGroupRepository.findAll();
-		return groups.stream().filter(group -> group.getTags() != null && group.getTags().contains(tag))
+		List<ProjectGroupResponse> matchingGroups= groups.stream().filter(group -> group.getTags() != null && group.getTags().contains(tag))
 				.map(group -> getProjectGroupresponse(group)).collect(Collectors.toList());
+		if (matchingGroups.isEmpty()) {
+	        throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No project groups found with tag: " + tag);
+	    }
+	    return matchingGroups;
 	}
 
 }
