@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,7 +41,7 @@ public class GroupPipelineService {
 		List<GroupPipeline> existingPipelines = groupPipelineRepository.findByProjectGroup(projectGroup);
 
 		if (!existingPipelines.isEmpty()) {
-			throw new IllegalStateException("A pipeline already exists for the given project group");
+			throw new DataIntegrityViolationException("A pipeline already exists for the given project group");
 		}
 
 		GroupPipeline groupPipeline = GroupPipeline.builder().exportType(groupPipelineRequest.getExportType())
@@ -91,7 +92,7 @@ public class GroupPipelineService {
 
 	/**
 	 * 
-	 * @param update               by id
+	 * @param update by id
 	 * @param groupPipelineRequest
 	 * @return
 	 */

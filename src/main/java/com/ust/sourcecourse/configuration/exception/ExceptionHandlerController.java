@@ -3,6 +3,7 @@ package com.ust.sourcecourse.configuration.exception;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class ExceptionHandlerController {
-	
 
 	@ExceptionHandler(ResponseStatusException.class)
 	public ResponseEntity<ErrorResponse> handleResponseStatusException(ResponseStatusException ex) {
@@ -84,9 +84,16 @@ public class ExceptionHandlerController {
 	public ResponseEntity<ErrorResponse> handleDatabaseException(Exception ex) {
 		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-		
+
 	}
 	
+	
+
+	    @ExceptionHandler(DataIntegrityViolationException.class)
+	    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+	        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+	        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	    }
 
 	public static class ErrorResponse {
 		private int status;
@@ -95,6 +102,10 @@ public class ExceptionHandlerController {
 		public ErrorResponse(int status, String message) {
 			this.status = status;
 			this.message = message;
+		}
+
+		public ErrorResponse(HttpStatus badRequest, String message2) {
+		
 		}
 
 		public int getStatus() {
