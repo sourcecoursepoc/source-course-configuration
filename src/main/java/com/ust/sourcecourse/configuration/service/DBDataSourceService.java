@@ -173,10 +173,12 @@ public class DBDataSourceService {
 		if (tagList == null) {
 			tagList = new ArrayList<>();
 		}
-		if(tags!=null) {
-		tagList.addAll(tags);
+		List<String> updateTagList = new ArrayList<>();
+		if (tags != null) {
+			updateTagList.addAll(tags);
 		}
-		Set<String> tagSet = new LinkedHashSet<>(tagList);
+
+		Set<String> tagSet = new LinkedHashSet<>(updateTagList);
 		sourceTable.setTags(new ArrayList<>(tagSet));
 
 		sourceTable.setDescription(description); // Set the description
@@ -196,10 +198,11 @@ public class DBDataSourceService {
 		if (tagList == null) {
 			tagList = new ArrayList<>();
 		}
+		List<String> updateColumnList = new ArrayList<>();
 		if (tags != null) {
-			tagList.addAll(tags);
+			updateColumnList.addAll(tags);
 		}
-		Set<String> tagSet = new LinkedHashSet<>(tagList);
+		Set<String> tagSet = new LinkedHashSet<>(updateColumnList);
 		sourceColumn.setTags(new ArrayList<>(tagSet));
 
 		sourceColumn.setDescription(description); // Set the description
