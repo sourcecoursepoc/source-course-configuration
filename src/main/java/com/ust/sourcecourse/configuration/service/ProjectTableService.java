@@ -58,10 +58,10 @@ public class ProjectTableService {
 			projectTables.add(projectTable);
 		}
 		project.setProjectTables(projectTables);
-		project=projectRepository.save(project);
-		
+		project = projectRepository.save(project);
 
-		List<DBTable> dbTables = project.getProjectTables().stream().map(projectTable -> getDBTable(projectTable.getSourceTable())).toList();
+		List<DBTable> dbTables = project.getProjectTables().stream()
+				.map(projectTable -> getDBTable(projectTable.getSourceTable())).toList();
 
 		return dbTables;
 
@@ -103,7 +103,6 @@ public class ProjectTableService {
 
 		return tables;
 	}
-
 
 	/**
 	 * 

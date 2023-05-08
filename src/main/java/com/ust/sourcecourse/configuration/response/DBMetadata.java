@@ -1,6 +1,7 @@
 package com.ust.sourcecourse.configuration.response;
 
 import lombok.Builder;
+
 import lombok.Data;
 
 @Data
