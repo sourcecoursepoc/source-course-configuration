@@ -9,11 +9,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HomePageResponse {
-
-	private String projectName;
-	private String description;
-	private int tables;
-	private int groups;
+public class AttributesInfo {
+	private String name;
+	private String notes;
+	private boolean isPrimary;
+	private String Type;
+	private String defaultValue;
+	private String prefix;
+	private String suffix;
 
 }

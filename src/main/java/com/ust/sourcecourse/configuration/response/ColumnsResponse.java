@@ -9,11 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HomePageResponse {
-
-	private String projectName;
-	private String description;
-	private int tables;
-	private int groups;
-
+public class ColumnsResponse {
+	private Long uid;
+	private AttributesInfo attributesInfo;
+	private SourceInfo sourceInfo;
 }
