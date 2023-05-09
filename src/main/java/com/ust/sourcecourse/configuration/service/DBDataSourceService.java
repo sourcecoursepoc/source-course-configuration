@@ -169,13 +169,12 @@ public class DBDataSourceService {
 			throw new IllegalArgumentException("Both Tags and description must not be empty");
 		}
 
-		List<String> tagList = sourceTable.getTags();
-		if (tagList == null) {
-			tagList = new ArrayList<>();
+		
+		List<String> tagList = new ArrayList<>();
+		if (tags != null) {
+			tagList.addAll(tags);
 		}
-		if(tags!=null) {
-		tagList.addAll(tags);
-		}
+
 		Set<String> tagSet = new LinkedHashSet<>(tagList);
 		sourceTable.setTags(new ArrayList<>(tagSet));
 
@@ -192,10 +191,8 @@ public class DBDataSourceService {
 		if (description == null && tags == null) {
 			throw new IllegalArgumentException("Both Tags and description must not be empty");
 		}
-		List<String> tagList = sourceColumn.getTags();
-		if (tagList == null) {
-			tagList = new ArrayList<>();
-		}
+		
+		List<String> tagList = new ArrayList<>();
 		if (tags != null) {
 			tagList.addAll(tags);
 		}
