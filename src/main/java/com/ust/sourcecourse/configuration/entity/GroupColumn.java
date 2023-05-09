@@ -1,7 +1,6 @@
 package com.ust.sourcecourse.configuration.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -86,8 +85,4 @@ public class GroupColumn {
 	@UpdateTimestamp
 	private LocalDateTime modifiedTimestamp;
 
-	public List<GroupColumn> getGroupColumns() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	}
+}

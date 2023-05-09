@@ -74,6 +74,20 @@ public class ExceptionHandlerController {
 	
 
 	/**
+	 * project already exists
+	 * 
+	 * @param ex
+	 * @return
+	 */
+	@ExceptionHandler(ResourceAlreadyExistsException.class)
+	@ResponseStatus(HttpStatus.CONFLICT)
+	@ResponseBody
+	public ResponseEntity<ErrorResponse> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex) {
+		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+	}
+
+	/**
 	 * 
 	 * @param ex
 	 * @return
@@ -90,8 +104,7 @@ public class ExceptionHandlerController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
 
 	}
-	
-	
+
 	public static class ErrorResponse {
 		private int status;
 		private String message;
