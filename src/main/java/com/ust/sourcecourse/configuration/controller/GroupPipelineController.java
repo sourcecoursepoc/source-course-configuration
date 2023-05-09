@@ -33,7 +33,7 @@ public class GroupPipelineController {
 	 * @return
 	 */
 	  @PostMapping("/{groupId}")
-	    public ResponseEntity<List<GroupPipelineResponse>> createPipeline(@PathVariable("groupId") Long uid,
+	    public ResponseEntity<List<GroupPipelineResponse>> createPipeline(@PathVariable("groupId")  Long uid,
 	            @RequestBody GroupPipelineRequest groupPipelineRequest) {
 	        List<GroupPipelineResponse> groupPipelineResponse = groupPipelineService.createGroupPipeline(uid,
 	                groupPipelineRequest);

@@ -6,6 +6,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
+
 
 @RestControllerAdvice
 public class ExceptionHandlerController {
@@ -40,7 +42,7 @@ public class ExceptionHandlerController {
 		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errorMessage);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 	}
-
+	
 	/**
 	 * Invalid Request
 	 * 
@@ -68,6 +70,9 @@ public class ExceptionHandlerController {
 		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 	}
+	
+	
+	
 
 	/**
 	 * 
@@ -76,8 +81,8 @@ public class ExceptionHandlerController {
 	 */
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
-		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
 	}
 
 	@ExceptionHandler({ EmptyResultDataAccessException.class, DataAccessException.class })
@@ -88,12 +93,21 @@ public class ExceptionHandlerController {
 	}
 	
 	
+//////////////////////////////////////////////////////////////////
 
-	    @ExceptionHandler(DataIntegrityViolationException.class)
-	    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-	        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
-	        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-	    }
+	
+	  @ExceptionHandler(NullPointerException.class)
+	  public ResponseEntity<String> handleNullPointerException(NullPointerException ex) {
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A null pointer exception occurred: " + ex.getMessage());
+	  }
+
+
+	@ExceptionHandler(RuntimeException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public ErrorResponse handleRuntimeException(RuntimeException ex) {
+		return new ErrorResponse("INTERNAL_SERVER_ERROR", ex.getMessage());
+	}
 
 	public static class ErrorResponse {
 		private int status;
@@ -105,7 +119,11 @@ public class ExceptionHandlerController {
 		}
 
 		public ErrorResponse(HttpStatus badRequest, String message2) {
-		
+
+		}
+
+		public ErrorResponse(String string, String message2) {
+			// TODO Auto-generated constructor stub
 		}
 
 		public int getStatus() {

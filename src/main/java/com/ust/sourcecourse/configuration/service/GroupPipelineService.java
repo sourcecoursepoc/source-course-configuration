@@ -4,13 +4,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.ust.sourcecourse.configuration.entity.GroupPipeline;
 import com.ust.sourcecourse.configuration.entity.ProjectGroup;
+import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.repository.GroupPipelineRepository;
 import com.ust.sourcecourse.configuration.repository.ProjectGroupRepository;
 import com.ust.sourcecourse.configuration.request.GroupPipelineRequest;
@@ -37,16 +37,17 @@ public class GroupPipelineService {
 
 	public List<GroupPipelineResponse> createGroupPipeline(Long uid, GroupPipelineRequest groupPipelineRequest) {
 		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
-				.orElseThrow(() -> new EntityNotFoundException("Project group not found with id " + uid));
+				.orElseThrow(() -> new ResourceNotFoundException("Project group not found with id " + uid));
 		List<GroupPipeline> existingPipelines = groupPipelineRepository.findByProjectGroup(projectGroup);
 
 		if (!existingPipelines.isEmpty()) {
-			throw new DataIntegrityViolationException("A pipeline already exists for the given project group");
+			throw new IllegalArgumentException("A pipeline already exists for the given project group");
 		}
 
 		GroupPipeline groupPipeline = GroupPipeline.builder().exportType(groupPipelineRequest.getExportType())
 				.loadType(groupPipelineRequest.getLoadType()).recurrence(groupPipelineRequest.getRecurrence())
-				.projectGroup(projectGroup).build();
+				.projectGroup(projectGroup).exportFileName(groupPipelineRequest.getExportFileName()).intimationList(groupPipelineRequest.getIntimationList())
+				.time(groupPipelineRequest.getTime()).monthlyDays(groupPipelineRequest.getMonthlyDays()).weeklyDays(groupPipelineRequest.getWeeklyDays()).build();
 
 		groupPipeline = groupPipelineRepository.save(groupPipeline);
 		return Collections.singletonList(getGroupPipelineResponse(groupPipeline));
@@ -55,7 +56,8 @@ public class GroupPipelineService {
 	private GroupPipelineResponse getGroupPipelineResponse(GroupPipeline groupPipeline) {
 		return GroupPipelineResponse.builder().uid(groupPipeline.getUid())
 				.groupUid(groupPipeline.getProjectGroup().getUid()).loadType(groupPipeline.getLoadType())
-				.exportType(groupPipeline.getExportType()).recurrence(groupPipeline.getRecurrence()).build();
+				.exportType(groupPipeline.getExportType()).recurrence(groupPipeline.getRecurrence()).exportFileName(groupPipeline.getExportFileName()).intimationList(groupPipeline.getIntimationList())
+				.time(groupPipeline.getTime()).monthlyDays(groupPipeline.getMonthlyDays()).weeklyDays(groupPipeline.getWeeklyDays()).build();
 	}
 
 	/**
@@ -66,12 +68,12 @@ public class GroupPipelineService {
 
 	public GroupPipelineResponse getGroupPipeline(Long id) {
 		GroupPipeline groupPipeline = groupPipelineRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Group pipeline not found with id " + id));
+				.orElseThrow(() -> new ResourceNotFoundException("Group pipeline not found with id " + id));
 		if (groupPipeline != null) {
 			return getGroupPipelineResponse(groupPipeline);
 		} else {
 			String errorMessage = "Pipeline with ID " + id + " not found";
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
+			throw new NullPointerException(errorMessage);
 		}
 	}
 
