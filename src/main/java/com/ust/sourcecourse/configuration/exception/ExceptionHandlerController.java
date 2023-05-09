@@ -92,22 +92,6 @@ public class ExceptionHandlerController {
 
 	}
 	
-	
-//////////////////////////////////////////////////////////////////
-
-	
-	  @ExceptionHandler(NullPointerException.class)
-	  public ResponseEntity<String> handleNullPointerException(NullPointerException ex) {
-	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A null pointer exception occurred: " + ex.getMessage());
-	  }
-
-
-	@ExceptionHandler(RuntimeException.class)
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	@ResponseBody
-	public ErrorResponse handleRuntimeException(RuntimeException ex) {
-		return new ErrorResponse("INTERNAL_SERVER_ERROR", ex.getMessage());
-	}
 
 	public static class ErrorResponse {
 		private int status;
