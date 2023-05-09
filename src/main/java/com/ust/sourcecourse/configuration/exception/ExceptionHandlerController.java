@@ -92,7 +92,7 @@ public class ExceptionHandlerController {
 
 	}
 	
-
+	
 	public static class ErrorResponse {
 		private int status;
 		private String message;

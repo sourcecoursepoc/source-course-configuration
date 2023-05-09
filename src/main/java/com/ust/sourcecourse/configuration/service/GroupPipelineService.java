@@ -4,9 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 import com.ust.sourcecourse.configuration.entity.GroupPipeline;
 import com.ust.sourcecourse.configuration.entity.ProjectGroup;
@@ -15,8 +14,6 @@ import com.ust.sourcecourse.configuration.repository.GroupPipelineRepository;
 import com.ust.sourcecourse.configuration.repository.ProjectGroupRepository;
 import com.ust.sourcecourse.configuration.request.GroupPipelineRequest;
 import com.ust.sourcecourse.configuration.response.GroupPipelineResponse;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class GroupPipelineService {
@@ -33,9 +30,10 @@ public class GroupPipelineService {
 	 * @param uid
 	 * @param groupPipelineRequest
 	 * @return
+	 * @throws HttpRequestMethodNotSupportedException 
 	 */
 
-	public List<GroupPipelineResponse> createGroupPipeline(Long uid, GroupPipelineRequest groupPipelineRequest) {
+	public List<GroupPipelineResponse> createGroupPipeline(Long uid, GroupPipelineRequest groupPipelineRequest) throws HttpRequestMethodNotSupportedException {
 		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
 				.orElseThrow(() -> new ResourceNotFoundException("Project group not found with id " + uid));
 		List<GroupPipeline> existingPipelines = groupPipelineRepository.findByProjectGroup(projectGroup);
@@ -43,6 +41,10 @@ public class GroupPipelineService {
 		if (!existingPipelines.isEmpty()) {
 			throw new IllegalArgumentException("A pipeline already exists for the given project group");
 		}
+		 if (groupPipelineRequest.getExportType() == null || groupPipelineRequest.getLoadType() == null ||
+	                groupPipelineRequest.getRecurrence() == null || groupPipelineRequest.getTime() == null) {
+	            throw new HttpRequestMethodNotSupportedException("Missing required fields");
+	        }
 
 		GroupPipeline groupPipeline = GroupPipeline.builder().exportType(groupPipelineRequest.getExportType())
 				.loadType(groupPipelineRequest.getLoadType()).recurrence(groupPipelineRequest.getRecurrence())
@@ -84,7 +86,7 @@ public class GroupPipelineService {
 	 */
 	public List<GroupPipelineResponse> findByProjectGroup(Long uid) {
 		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
-				.orElseThrow(() -> new EntityNotFoundException("Project group not found with id " + uid));
+				.orElseThrow(() -> new ResourceNotFoundException("Project group not found with id " + uid));
 
 		List<GroupPipeline> pipelines = groupPipelineRepository.findByProjectGroup(projectGroup);
 
@@ -101,7 +103,7 @@ public class GroupPipelineService {
 
 	public GroupPipelineResponse updateGroupPipeline(Long id, GroupPipelineRequest groupPipelineRequest) {
 		GroupPipeline groupPipeline = groupPipelineRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Group Pipeline not found with id " + id));
+				.orElseThrow(() -> new ResourceNotFoundException("Group Pipeline not found with id " + id));
 
 		groupPipeline = GroupPipeline.builder().uid(groupPipeline.getUid())
 				.exportType(groupPipelineRequest.getExportType()).loadType(groupPipelineRequest.getLoadType())
@@ -123,7 +125,7 @@ public class GroupPipelineService {
 
 	public void deleteGroupPipeline(Long id) {
 		GroupPipeline groupPipeline = groupPipelineRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Group pipeline not found with id " + id));
+				.orElseThrow(() -> new ResourceNotFoundException("Group pipeline not found with id " + id));
 
 		groupPipelineRepository.delete(groupPipeline);
 	}

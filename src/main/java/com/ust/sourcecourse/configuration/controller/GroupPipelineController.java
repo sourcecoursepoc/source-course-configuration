@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,10 +32,11 @@ public class GroupPipelineController {
 	 * @param uid
 	 * @param groupPipelineRequest
 	 * @return
+	 * @throws HttpRequestMethodNotSupportedException 
 	 */
 	  @PostMapping("/{groupId}")
 	    public ResponseEntity<List<GroupPipelineResponse>> createPipeline(@PathVariable("groupId")  Long uid,
-	            @RequestBody GroupPipelineRequest groupPipelineRequest) {
+	            @RequestBody GroupPipelineRequest groupPipelineRequest) throws HttpRequestMethodNotSupportedException {
 	        List<GroupPipelineResponse> groupPipelineResponse = groupPipelineService.createGroupPipeline(uid,
 	                groupPipelineRequest);
 	        return ResponseEntity.ok(groupPipelineResponse);
