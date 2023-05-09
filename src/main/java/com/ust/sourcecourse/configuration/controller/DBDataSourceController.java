@@ -90,17 +90,33 @@ public class DBDataSourceController {
 		List<DBTableColumn> groups = dataSourceService.searchColumnsByTag(tag);
 		return ResponseEntity.ok(groups);
 	}
-	
+
 	@PostMapping("/column/{id}")
-	public ResponseEntity<List<String>> addTagToSourceColumn(@PathVariable("id") Long uid, @RequestBody TagDescriptionRequest request) {
-	    List<String> updatedSourceColumn = dataSourceService.addTagSourceColumn(uid, request.getTags(), request.getDescription());
-	    return ResponseEntity.ok(updatedSourceColumn);
+	public ResponseEntity<List<String>> addTagToSourceColumn(@PathVariable("id") Long uid,
+			@RequestBody TagDescriptionRequest request) {
+		List<String> updatedSourceColumn = dataSourceService.addTagSourceColumn(uid, request.getTags(),
+				request.getDescription());
+		return ResponseEntity.ok(updatedSourceColumn);
 	}
 
 	@PostMapping("/table/{id}")
-	public ResponseEntity<List<String>> addTagToSourceTable(@PathVariable ("id") Long uid, @RequestBody TagDescriptionRequest request) {
-	    List<String> updatedSourceTable = dataSourceService.addTagSourceTable(uid, request.getTags(), request.getDescription());
-	    return ResponseEntity.ok(updatedSourceTable);
+	public ResponseEntity<List<String>> addTagToSourceTable(@PathVariable("id") Long uid,
+			@RequestBody TagDescriptionRequest request) {
+		List<String> updatedSourceTable = dataSourceService.addTagSourceTable(uid, request.getTags(),
+				request.getDescription());
+		return ResponseEntity.ok(updatedSourceTable);
+	}
+
+	@GetMapping("/searchByTag/{tag}")
+	public ResponseEntity<List<DBTable>> searchTablesByTag1(@PathVariable String tag) {
+		List<DBTable> tables = dataSourceService.searchTablesByTag(tag);
+		return ResponseEntity.ok(tables);
+	}
+
+	@GetMapping("/searchByTag/{tag}")
+	public ResponseEntity<List<DBTableColumn>> searchColumnsByTag1(@PathVariable String tag) {
+		List<DBTableColumn> columns = dataSourceService.searchColumnsByTag(tag);
+		return ResponseEntity.ok(columns);
 	}
 
 }
