@@ -113,10 +113,6 @@ public class DBDataSourceController {
 		return ResponseEntity.ok(tables);
 	}
 
-	@GetMapping("/searchByTag/{tag}")
-	public ResponseEntity<List<DBTableColumn>> searchColumnsByTag1(@PathVariable String tag) {
-		List<DBTableColumn> columns = dataSourceService.searchColumnsByTag(tag);
-		return ResponseEntity.ok(columns);
-	}
+	
 
 }

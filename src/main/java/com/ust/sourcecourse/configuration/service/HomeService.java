@@ -26,7 +26,7 @@ public class HomeService {
 		List<HomePageResponse> homePageResponses = new ArrayList<>();
 		for (Project project : projects) {
 			HomePageResponse response = HomePageResponse.builder().projectName(project.getName())
-					.description(project.getDescription()).build();
+					.description(project.getDescription()).uid(project.getUid()).build();
 			response.setTables(project.getProjectTables().size());
 			response.setGroups(project.getGroups().size());
 			homePageResponses.add(response);
