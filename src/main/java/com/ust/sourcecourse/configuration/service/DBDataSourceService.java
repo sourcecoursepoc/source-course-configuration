@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.ust.sourcecourse.configuration.entity.ConnectionInfo;
 import com.ust.sourcecourse.configuration.entity.DataSource;
 import com.ust.sourcecourse.configuration.entity.SourceColumn;
 import com.ust.sourcecourse.configuration.entity.SourceTable;
+import com.ust.sourcecourse.configuration.event.EventProducer;
 import com.ust.sourcecourse.configuration.exception.ResourceNotFoundException;
 import com.ust.sourcecourse.configuration.repository.DataSourceRepository;
 import com.ust.sourcecourse.configuration.repository.SourceColumnRepository;
@@ -30,8 +32,6 @@ import com.ust.sourcecourse.configuration.response.DBTableColumn;
 import com.ust.sourcecourse.configuration.response.DBTableColumnMetadata;
 import com.ust.sourcecourse.configuration.response.DBTableMetadata;
 
-import jakarta.transaction.Transactional;
-
 @Service
 public class DBDataSourceService {
 
@@ -42,6 +42,9 @@ public class DBDataSourceService {
 	@Autowired
 	private SourceTableRepository sourceTableRepository;
 
+	@Autowired
+	private EventProducer eventProducer;
+
 	@Transactional
 	public DBDataSourceInfo saveDB(DBData dbData) {
 		ConnectionInfo connectionInfo = ConnectionInfo.builder().connectionURL(dbData.getConnectionURL())
@@ -50,6 +53,7 @@ public class DBDataSourceService {
 				.connectionInfo(connectionInfo).build();
 		connectionInfo.setDataSource(dataSource);
 		dataSource = dataSourceRepository.save(dataSource);
+		eventProducer.produceDataSourceEvent(dataSource.getUid());
 		return getDBDataSource(dataSource);
 	}
 
@@ -169,7 +173,6 @@ public class DBDataSourceService {
 			throw new IllegalArgumentException("Both Tags and description must not be empty");
 		}
 
-		
 		List<String> tagList = new ArrayList<>();
 		if (tags != null) {
 			tagList.addAll(tags);
@@ -191,7 +194,7 @@ public class DBDataSourceService {
 		if (description == null && tags == null) {
 			throw new IllegalArgumentException("Both Tags and description must not be empty");
 		}
-		
+
 		List<String> tagList = new ArrayList<>();
 		if (tags != null) {
 			tagList.addAll(tags);
@@ -211,6 +214,7 @@ public class DBDataSourceService {
 		return columns.stream().filter(column -> column.getTags() != null && column.getTags().contains(tag))
 				.map(column -> getDBTableColumn1(column)).collect(Collectors.toList());
 	}
+
 	public List<DBTable> searchTablesByTag1(String tag) {
 		List<SourceTable> tables = sourceTableRepository.findAll();
 		return tables.stream().filter(table -> table.getTags() != null && table.getTags().contains(tag))
