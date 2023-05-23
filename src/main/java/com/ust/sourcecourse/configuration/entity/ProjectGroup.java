@@ -27,8 +27,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "project_group")
-@Data
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProjectGroup {

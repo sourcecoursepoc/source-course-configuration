@@ -205,4 +205,16 @@ public class DBDataSourceService {
 
 		return sourceColumn.getTags();
 	}
+
+	public List<DBTableColumn> searchColumnsByTag1(String tag) {
+		List<SourceColumn> columns = sourceColumnRepository.findAll();
+		return columns.stream().filter(column -> column.getTags() != null && column.getTags().contains(tag))
+				.map(column -> getDBTableColumn1(column)).collect(Collectors.toList());
+	}
+	public List<DBTable> searchTablesByTag1(String tag) {
+		List<SourceTable> tables = sourceTableRepository.findAll();
+		return tables.stream().filter(table -> table.getTags() != null && table.getTags().contains(tag))
+				.map(table -> getDBTable(table)).collect(Collectors.toList());
+	}
+
 }
