@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.ust.sourcecourse.configuration.entity.ConnectionInfo;
@@ -30,7 +31,6 @@ import com.ust.sourcecourse.configuration.response.DBTableColumn;
 import com.ust.sourcecourse.configuration.response.DBTableColumnMetadata;
 import com.ust.sourcecourse.configuration.response.DBTableMetadata;
 
-import jakarta.transaction.Transactional;
 
 @Service
 public class DBDataSourceService {
@@ -42,6 +42,9 @@ public class DBDataSourceService {
 	@Autowired
 	private SourceTableRepository sourceTableRepository;
 
+	@Autowired
+	KafkaProducerService kafProducerServicel;
+	
 	@Transactional
 	public DBDataSourceInfo saveDB(DBData dbData) {
 		ConnectionInfo connectionInfo = ConnectionInfo.builder().connectionURL(dbData.getConnectionURL())
@@ -50,6 +53,9 @@ public class DBDataSourceService {
 				.connectionInfo(connectionInfo).build();
 		connectionInfo.setDataSource(dataSource);
 		dataSource = dataSourceRepository.save(dataSource);
+		
+		kafProducerServicel.producer(dataSource.getUid());
+		
 		return getDBDataSource(dataSource);
 	}
 
