@@ -1,7 +1,9 @@
 package com.ust.sourcecourse.configuration.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,14 +49,12 @@ public class ProjectTableService {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found");
 		}
 
-		List<Long> sourceTableId = projTableReq.getSourceTableUids();
-		List<ProjectTable> projectTables2 = project.getProjectTables();
-		for (ProjectTable projTable : projectTables2) {
-			if (sourceTableId != null && sourceTableId.contains(projTable.getSourceTable().getUid())) {
-				sourceTableId.remove(projTable.getSourceTable().getUid());
-			}
-
-		}
+		Set<Long> sourceTableId =new HashSet<>( projTableReq.getSourceTableUids());
+		
+		if (sourceTableId.size() != projTableReq.getSourceTableUids().size()){
+	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate source table IDs found in the request");
+	    }
+		
 		List<SourceTable> sourceTables = sourceTableRepository.findAllById(sourceTableId);
 
 		List<ProjectTable> projectTables = project.getProjectTables();
