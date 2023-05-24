@@ -49,21 +49,18 @@ public class ProjectTableService {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found");
 		}
 
-		Set<Long> sourceTableId =new HashSet<>( projTableReq.getSourceTableUids());
-		
-		if (sourceTableId.size() != projTableReq.getSourceTableUids().size()){
-	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate source table IDs found in the request");
-	    }
-		
-		List<SourceTable> sourceTables = sourceTableRepository.findAllById(sourceTableId);
+		Set<Long> sourceTableId = new HashSet<>(projTableReq.getSourceTableUids());
 
-		List<ProjectTable> projectTables = project.getProjectTables();
-		for (SourceTable sourceTable : sourceTables) {
-			ProjectTable projectTable = ProjectTable.builder().project(project).sourceTable(sourceTable).build();
-			if (projectTables.contains(projectTable)) {
-
-				throw new ResponseStatusException(HttpStatus.CONFLICT, "Project table already exists");
+		
+		List<ProjectTable> projectTables = new ArrayList<>();
+		for (Long sourceTableIds : sourceTableId) {
+			SourceTable sourceTable = sourceTableRepository.findById(sourceTableIds).orElse(null);
+			if (sourceTable == null) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+						"Source table not found for ID: " + sourceTableIds);
 			}
+			ProjectTable projectTable = ProjectTable.builder().project(project).sourceTable(sourceTable).build();
+
 			projectTables.add(projectTable);
 		}
 		project.setProjectTables(projectTables);
@@ -119,7 +116,7 @@ public class ProjectTableService {
 	 * @param sourceId
 	 */
 
-	public List<Long> deleteProjectTable(ProjectTableRequest projTableReq) throws ResourceNotFoundException{
+	public List<Long> deleteProjectTable(ProjectTableRequest projTableReq) throws ResourceNotFoundException {
 
 		List<ProjectTable> projectTableList = projectTableRepository.findByProjectUid(projTableReq.getProjectUid());
 		List<Long> deletedUid = new ArrayList<>();
@@ -132,8 +129,8 @@ public class ProjectTableService {
 			}
 		}
 		if (deletedUid.isEmpty()) {
-            throw new ResourceNotFoundException("No project Id found for the given request");
-        }
+			throw new ResourceNotFoundException("No project Id found for the given request");
+		}
 		projectTableRepository.deleteAllById(deletedUid);
 		return deletedUid;
 
