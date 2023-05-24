@@ -51,7 +51,6 @@ public class ProjectTableService {
 
 		Set<Long> sourceTableId = new HashSet<>(projTableReq.getSourceTableUids());
 
-		
 		List<ProjectTable> projectTables = new ArrayList<>();
 		for (Long sourceTableIds : sourceTableId) {
 			SourceTable sourceTable = sourceTableRepository.findById(sourceTableIds).orElse(null);
