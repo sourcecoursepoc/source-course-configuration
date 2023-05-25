@@ -50,18 +50,14 @@ public class ProjectTableService {
 		}
 
 		Set<Long> sourceTableId = new HashSet<>(projTableReq.getSourceTableUids());
+		List<SourceTable> sourceTables = sourceTableRepository.findAllById(sourceTableId);		
 
 		List<ProjectTable> projectTables = new ArrayList<>();
-		for (Long sourceTableIds : sourceTableId) {
-			SourceTable sourceTable = sourceTableRepository.findById(sourceTableIds).orElse(null);
-			if (sourceTable == null) {
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-						"Source table not found for ID: " + sourceTableIds);
-			}
+		for (SourceTable sourceTable : sourceTables) {
 			ProjectTable projectTable = ProjectTable.builder().project(project).sourceTable(sourceTable).build();
-
 			projectTables.add(projectTable);
 		}
+
 		project.setProjectTables(projectTables);
 		project = projectRepository.save(project);
 
