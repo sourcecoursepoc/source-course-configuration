@@ -35,9 +35,9 @@ public class GroupPipelineController {
 	 * @throws HttpRequestMethodNotSupportedException 
 	 */
 	  @PostMapping("/{groupId}")
-	    public ResponseEntity<List<GroupPipelineResponse>> createPipeline(@PathVariable("groupId")  Long uid,
+	    public ResponseEntity<GroupPipelineResponse>createPipeline(@PathVariable("groupId")  Long uid,
 	            @RequestBody GroupPipelineRequest groupPipelineRequest) throws HttpRequestMethodNotSupportedException {
-	        List<GroupPipelineResponse> groupPipelineResponse = groupPipelineService.createGroupPipeline(uid,
+	        GroupPipelineResponse groupPipelineResponse = groupPipelineService.createGroupPipeline(uid,
 	                groupPipelineRequest);
 	        return ResponseEntity.ok(groupPipelineResponse);
 	    }

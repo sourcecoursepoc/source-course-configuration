@@ -33,7 +33,7 @@ public class GroupPipelineService {
 	 * @throws HttpRequestMethodNotSupportedException 
 	 */
 
-	public List<GroupPipelineResponse> createGroupPipeline(Long uid, GroupPipelineRequest groupPipelineRequest) throws HttpRequestMethodNotSupportedException {
+	public GroupPipelineResponse createGroupPipeline(Long uid, GroupPipelineRequest groupPipelineRequest) throws HttpRequestMethodNotSupportedException {
 		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
 				.orElseThrow(() -> new ResourceNotFoundException("Project group not found with id " + uid));
 		List<GroupPipeline> existingPipelines = groupPipelineRepository.findByProjectGroup(projectGroup);
@@ -52,7 +52,7 @@ public class GroupPipelineService {
 				.time(groupPipelineRequest.getTime()).monthlyDays(groupPipelineRequest.getMonthlyDays()).weeklyDays(groupPipelineRequest.getWeeklyDays()).build();
 
 		groupPipeline = groupPipelineRepository.save(groupPipeline);
-		return Collections.singletonList(getGroupPipelineResponse(groupPipeline));
+		return (getGroupPipelineResponse(groupPipeline));
 	}
 
 	private GroupPipelineResponse getGroupPipelineResponse(GroupPipeline groupPipeline) {
