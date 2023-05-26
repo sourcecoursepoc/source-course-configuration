@@ -1,7 +1,5 @@
 package com.ust.sourcecourse.configuration.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -60,17 +58,15 @@ public class GroupPipelineController {
 		 * @param get pipeline by projectGroup uid
 		 * @return
 		 */
-		@GetMapping("/group/{id}")
-		public ResponseEntity<List<GroupPipelineResponse>> PipelinebyProjectGroup(@PathVariable("id") Long uid) {
-		    List<GroupPipelineResponse> pipelines = groupPipelineService.findByProjectGroup(uid);
-		    if (!pipelines.isEmpty()) {
-		        return ResponseEntity.ok(pipelines);
+		@GetMapping("/group/{groupId}")
+		public ResponseEntity<GroupPipelineResponse> PipelinebyProjectGroup(@PathVariable("groupId") Long uid) {
+		    GroupPipelineResponse pipelineResponse = groupPipelineService.findByProjectGroup(uid);
+		    if (pipelineResponse != null) {
+		        return ResponseEntity.ok(pipelineResponse);
 		    } else {
 		        return ResponseEntity.noContent().build();
 		    }
 		}
-
-		
 		
 		/**
 		 * 
@@ -78,8 +74,8 @@ public class GroupPipelineController {
 		 * @return
 		 */
 		
-		@PutMapping("/{id}")
-		public ResponseEntity<GroupPipelineResponse> updateGroupPipeline(@PathVariable("id") Long id,
+		@PutMapping("/{pipelineId}")
+		public ResponseEntity<GroupPipelineResponse> updateGroupPipeline(@PathVariable("pipelineId") Long id,
 				@RequestBody GroupPipelineRequest groupPipelineRequest) {
 			GroupPipelineResponse updatedGroupPipeline = groupPipelineService.updateGroupPipeline(id, groupPipelineRequest);
 			return ResponseEntity.ok(updatedGroupPipeline);
@@ -91,8 +87,8 @@ public class GroupPipelineController {
 		 * @return
 		 */
 		
-		@DeleteMapping("/{id}")
-		public ResponseEntity<Void> deleteGroupPipeline(@PathVariable("id") Long id) {
+		@DeleteMapping("/{pipelineId}")
+		public ResponseEntity<Void> deleteGroupPipeline(@PathVariable("pipelineId") Long id) {
 			groupPipelineService.deleteGroupPipeline(id);
 			return ResponseEntity.noContent().build();
 			}

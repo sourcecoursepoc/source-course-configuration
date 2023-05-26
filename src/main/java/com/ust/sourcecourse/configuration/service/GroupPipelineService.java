@@ -1,6 +1,5 @@
 package com.ust.sourcecourse.configuration.service;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,36 +29,40 @@ public class GroupPipelineService {
 	 * @param uid
 	 * @param groupPipelineRequest
 	 * @return
-	 * @throws HttpRequestMethodNotSupportedException 
+	 * @throws HttpRequestMethodNotSupportedException
 	 */
-
-	public GroupPipelineResponse createGroupPipeline(Long uid, GroupPipelineRequest groupPipelineRequest) throws HttpRequestMethodNotSupportedException {
+	public GroupPipelineResponse createGroupPipeline(Long uid, GroupPipelineRequest groupPipelineRequest)
+			throws HttpRequestMethodNotSupportedException {
 		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
 				.orElseThrow(() -> new ResourceNotFoundException("Project group not found with id " + uid));
-		List<GroupPipeline> existingPipelines = groupPipelineRepository.findByProjectGroup(projectGroup);
+		GroupPipeline existingPipeline = groupPipelineRepository.findByProjectGroup(projectGroup);
 
-		if (!existingPipelines.isEmpty()) {
+		if (existingPipeline != null) {
 			throw new IllegalArgumentException("A pipeline already exists for the given project group");
 		}
-		 if (groupPipelineRequest.getExportType() == null || groupPipelineRequest.getLoadType() == null ||
-	                groupPipelineRequest.getRecurrence() == null || groupPipelineRequest.getTime() == null) {
-	            throw new HttpRequestMethodNotSupportedException("Missing required fields");
-	        }
+		if (groupPipelineRequest.getExportType() == null || groupPipelineRequest.getLoadType() == null
+				|| groupPipelineRequest.getRecurrence() == null || groupPipelineRequest.getTime() == null) {
+			throw new HttpRequestMethodNotSupportedException("Missing required fields");
+		}
 
 		GroupPipeline groupPipeline = GroupPipeline.builder().exportType(groupPipelineRequest.getExportType())
 				.loadType(groupPipelineRequest.getLoadType()).recurrence(groupPipelineRequest.getRecurrence())
-				.projectGroup(projectGroup).exportFileName(groupPipelineRequest.getExportFileName()).intimationList(groupPipelineRequest.getIntimationList())
-				.time(groupPipelineRequest.getTime()).monthlyDays(groupPipelineRequest.getMonthlyDays()).weeklyDays(groupPipelineRequest.getWeeklyDays()).build();
+				.projectGroup(projectGroup).exportFileName(groupPipelineRequest.getExportFileName())
+				.intimationList(groupPipelineRequest.getIntimationList()).time(groupPipelineRequest.getTime())
+				.monthlyDays(groupPipelineRequest.getMonthlyDays()).weeklyDays(groupPipelineRequest.getWeeklyDays())
+				.build();
 
 		groupPipeline = groupPipelineRepository.save(groupPipeline);
-		return (getGroupPipelineResponse(groupPipeline));
+		return getGroupPipelineResponse(groupPipeline);
 	}
 
 	private GroupPipelineResponse getGroupPipelineResponse(GroupPipeline groupPipeline) {
 		return GroupPipelineResponse.builder().uid(groupPipeline.getUid())
 				.groupUid(groupPipeline.getProjectGroup().getUid()).loadType(groupPipeline.getLoadType())
-				.exportType(groupPipeline.getExportType()).recurrence(groupPipeline.getRecurrence()).exportFileName(groupPipeline.getExportFileName()).intimationList(groupPipeline.getIntimationList())
-				.time(groupPipeline.getTime()).monthlyDays(groupPipeline.getMonthlyDays()).weeklyDays(groupPipeline.getWeeklyDays()).build();
+				.exportType(groupPipeline.getExportType()).recurrence(groupPipeline.getRecurrence())
+				.exportFileName(groupPipeline.getExportFileName()).intimationList(groupPipeline.getIntimationList())
+				.time(groupPipeline.getTime()).monthlyDays(groupPipeline.getMonthlyDays())
+				.weeklyDays(groupPipeline.getWeeklyDays()).build();
 	}
 
 	/**
@@ -84,19 +87,21 @@ public class GroupPipelineService {
 	 * @param get pipeline by projectgroup uid
 	 * @return
 	 */
-	public List<GroupPipelineResponse> findByProjectGroup(Long uid) {
+	public GroupPipelineResponse findByProjectGroup(Long uid) {
 		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
 				.orElseThrow(() -> new ResourceNotFoundException("Project group not found with id " + uid));
 
-		List<GroupPipeline> pipelines = groupPipelineRepository.findByProjectGroup(projectGroup);
+		GroupPipeline pipeline = groupPipelineRepository.findByProjectGroup(projectGroup);
+		if (pipeline == null) {
+			throw new ResourceNotFoundException("Pipeline not found for project group with id " + uid);
+		}
 
-		return pipelines.stream().map(pipeline -> getGroupPipelineResponse(pipeline)).toList();
-
+		return getGroupPipelineResponse(pipeline);
 	}
 
 	/**
 	 * 
-	 * @param update by id
+	 * @param update               by id
 	 * @param groupPipelineRequest
 	 * @return
 	 */
@@ -104,16 +109,24 @@ public class GroupPipelineService {
 	public GroupPipelineResponse updateGroupPipeline(Long id, GroupPipelineRequest groupPipelineRequest) {
 		GroupPipeline groupPipeline = groupPipelineRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Group Pipeline not found with id " + id));
-
+		
+		
 		groupPipeline = GroupPipeline.builder().uid(groupPipeline.getUid())
 				.exportType(groupPipelineRequest.getExportType()).loadType(groupPipelineRequest.getLoadType())
-				.recurrence(groupPipelineRequest.getRecurrence()).projectGroup(groupPipeline.getProjectGroup()).build();
+				.recurrence(groupPipelineRequest.getRecurrence()).projectGroup(groupPipeline.getProjectGroup())
+				.exportFileName(groupPipelineRequest.getExportFileName()).intimationList(groupPipelineRequest.getIntimationList())
+				.time(groupPipelineRequest.getTime()).monthlyDays(groupPipelineRequest.getMonthlyDays())
+				.weeklyDays(groupPipelineRequest.getWeeklyDays()).build();
 
 		groupPipeline = groupPipelineRepository.save(groupPipeline);
 
 		GroupPipelineResponse groupPipelineResponse = GroupPipelineResponse.builder().uid(groupPipeline.getUid())
-				.groupUid(groupPipeline.getProjectGroup().getUid()).loadType(groupPipeline.getLoadType())
-				.exportType(groupPipeline.getExportType()).recurrence(groupPipeline.getRecurrence()).build();
+				.groupUid(groupPipeline.getProjectGroup().getUid())
+				.exportType(groupPipeline.getExportType()).loadType(groupPipeline.getLoadType())
+				.recurrence(groupPipeline.getRecurrence()).exportFileName(groupPipeline.getExportFileName())
+				.intimationList(groupPipeline.getIntimationList()).time(groupPipeline.getTime())
+				.monthlyDays(groupPipeline.getMonthlyDays())
+				.weeklyDays(groupPipeline.getWeeklyDays()).build();
 
 		return groupPipelineResponse;
 	}
