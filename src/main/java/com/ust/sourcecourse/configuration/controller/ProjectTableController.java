@@ -21,6 +21,7 @@ import com.ust.sourcecourse.configuration.request.ProjectTableRequest;
 import com.ust.sourcecourse.configuration.response.DBTable;
 import com.ust.sourcecourse.configuration.service.ProjectTableService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 
 @RestController
@@ -37,6 +38,7 @@ public class ProjectTableController {
 	 */
 
 	@PostMapping
+	@Operation(summary = "Create Project Table", description = "Create a project table with the provided request")
 	public ResponseEntity<List<DBTable>> createProjectTable(@Valid @RequestBody ProjectTableRequest projTableReq) {
 		List<DBTable> dbTables = null;
 		try {
@@ -56,6 +58,7 @@ public class ProjectTableController {
 	 * @return
 	 */
 	@GetMapping("/{id}")
+	@Operation(summary = "Get Project Table", description = "Get project table data for a specific user identified by user ID")
 	public ResponseEntity<List<DBTable>> getProjectTable(@PathVariable("id") Long uid) {
 		try {
 			List<DBTable> projInfo = projectTableService.getProjectTables(uid);
@@ -71,6 +74,7 @@ public class ProjectTableController {
 	 */
 
 	@DeleteMapping
+	@Operation(summary = "Delete Project Table", description = "Deletes a project table based on the provided projectUid and sourceTableUid")
 	public ResponseEntity<List<Long>> deleteProjectTable(@RequestBody ProjectTableRequest request) {
 		try {
 			List<Long> deleteTable = projectTableService.deleteProjectTable(request);

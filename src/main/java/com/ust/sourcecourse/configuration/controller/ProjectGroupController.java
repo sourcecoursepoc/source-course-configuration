@@ -19,6 +19,7 @@ import com.ust.sourcecourse.configuration.request.ProjectGroupRequest;
 import com.ust.sourcecourse.configuration.response.ProjectGroupResponse;
 import com.ust.sourcecourse.configuration.service.ProjectGroupService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 
 @RestController
@@ -36,6 +37,7 @@ public class ProjectGroupController {
 	 */
 
 	@PostMapping
+	@Operation(summary = "Create Project Group", description = "Creates a new project group")
 	public ResponseEntity<ProjectGroupResponse> createProjectGroup(
 			@Valid @RequestBody ProjectGroupRequest projectGroupRequest) {
 		ProjectGroupResponse projectGroupResponse = projectGroupService.createProjectGroup(projectGroupRequest);
@@ -61,6 +63,7 @@ public class ProjectGroupController {
 	 */
 
 	@GetMapping("/project/{projectId}")
+	@Operation(summary = "Get Project Group", description = "Get project group data for a specific group identified by groupId")
 	public ResponseEntity<List<ProjectGroupResponse>> getProjectGroupsByProjectUid(
 			@PathVariable("projectId") Long uid) {
 		List<ProjectGroupResponse> projectGroups = projectGroupService.findByProjectUid(uid);
@@ -79,6 +82,7 @@ public class ProjectGroupController {
 	 */
 
 	@PutMapping("/{groupId}")
+	@Operation(summary = "Update Project Group", description = "Update project group with given groupId")
 	public ResponseEntity<ProjectGroupResponse> updateProjectGroup(@PathVariable("groupId") Long id,
 			@RequestBody ProjectGroupRequest projectGroupRequest) {
 		ProjectGroupResponse updatedProjectGroup = projectGroupService.updateProjectGroup(id, projectGroupRequest);
@@ -92,6 +96,7 @@ public class ProjectGroupController {
 	 * @return
 	 */
 	@DeleteMapping("/{groupId}")
+	@Operation(summary = "Delete Project Group", description = "Deletes a project group identified by groupId")
 	public ResponseEntity<Void> deleteProjectGroup(@PathVariable("groupId") Long id) {
 		projectGroupService.deleteProjectGroup(id);
 		return ResponseEntity.noContent().build();
@@ -104,6 +109,7 @@ public class ProjectGroupController {
 	 * @return
 	 */
 	@PostMapping("/{groupId}/tags")
+	@Operation(summary = "Add Tag to Project Group", description = "Add tags to a specific project group identified by groupId")
 	public ResponseEntity<List<String>> addTagToProjectGroup(@PathVariable("groupId") Long uid,
 			@RequestBody List<String> tags) {
 		List<String> updatedProjectGroup = projectGroupService.addTagToProjectGroup(uid, tags);
@@ -118,7 +124,9 @@ public class ProjectGroupController {
 	 */
 
 	@DeleteMapping("/{groupId}/tags/{tag}")
-	public ResponseEntity<String> removeTagFromProjectGroup(@PathVariable("groupId") Long uid, @PathVariable String tag) {
+	@Operation(summary = "Remove Tag from Project Group", description = "Remove a tag from a project group using groupId and tag ")
+	public ResponseEntity<String> removeTagFromProjectGroup(@PathVariable("groupId") Long uid,
+			@PathVariable String tag) {
 		ResponseEntity<String> updatedProjectGroup = projectGroupService.removeTagFromProjectGroup(uid, tag);
 		if (updatedProjectGroup != null) {
 			return ResponseEntity.ok("Tag '" + tag + "' deleted successfully from project group with id " + uid);
@@ -134,6 +142,7 @@ public class ProjectGroupController {
 	 */
 
 	@GetMapping("/{groupId}/tags")
+	@Operation(summary = "Get Tags by Group", description = "Retrieve tags for a specific group identified by groupId")
 	public ResponseEntity<List<String>> getTagsByGroup(@PathVariable("groupId") Long uid) {
 		List<String> tags = projectGroupService.getTagsByGroup(uid);
 		return ResponseEntity.ok(tags);
@@ -146,6 +155,7 @@ public class ProjectGroupController {
 	 */
 
 	@GetMapping("/searchByTag/{tag}")
+	@Operation(summary = "Search Tag", description = "Search project groups by tag")
 	public ResponseEntity<List<ProjectGroupResponse>> searchGroupsByTag(@PathVariable String tag) {
 		List<ProjectGroupResponse> groups = projectGroupService.searchGroupsByTag(tag);
 		return ResponseEntity.ok(groups);
