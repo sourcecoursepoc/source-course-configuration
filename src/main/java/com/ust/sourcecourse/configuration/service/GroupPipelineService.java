@@ -14,6 +14,8 @@ import com.ust.sourcecourse.configuration.repository.ProjectGroupRepository;
 import com.ust.sourcecourse.configuration.request.GroupPipelineRequest;
 import com.ust.sourcecourse.configuration.response.GroupPipelineResponse;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class GroupPipelineService {
 
@@ -136,11 +138,15 @@ public class GroupPipelineService {
 	 * @param Delete by id
 	 */
 
-	public void deleteGroupPipeline(Long id) {
-		GroupPipeline groupPipeline = groupPipelineRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Group pipeline not found with id " + id));
-
-		groupPipelineRepository.delete(groupPipeline);
-	}
-
+	 
+	  @Transactional
+	  public void deleteGroupPipeline(Long id) {
+	    GroupPipeline groupPipeline = groupPipelineRepository.findById(id)
+	      .orElseThrow(() -> new ResourceNotFoundException("Group pipeline not found with id " + id));
+	    
+	    ProjectGroup projectGroup = groupPipeline.getProjectGroup();
+	    projectGroup.setGroupPipeline(null);
+	    
+	    groupPipelineRepository.delete(groupPipeline);
+	  }
 }
