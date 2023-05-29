@@ -57,9 +57,9 @@ public class ProjectTableController {
 	 * @param uid
 	 * @return
 	 */
-	@GetMapping("/{id}")
+	@GetMapping("/{ProjectTable_id}")
 	@Operation(summary = "Get Project Table", description = "Get project table data for a specific user identified by user ID")
-	public ResponseEntity<List<DBTable>> getProjectTable(@PathVariable("id") Long uid) {
+	public ResponseEntity<List<DBTable>> getProjectTable(@PathVariable("ProjectTable_id") Long uid) {
 		try {
 			List<DBTable> projInfo = projectTableService.getProjectTables(uid);
 			return ResponseEntity.ok(projInfo);
