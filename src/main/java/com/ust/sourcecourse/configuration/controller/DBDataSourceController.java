@@ -52,7 +52,7 @@ public class DBDataSourceController {
 	}
 
 	@DeleteMapping("/table/{SourceTable_id}/{tag}")
-	@Operation(summary = "Remove Tag from SourceTable", description = "Remove a specific tag from a SourceTable identified by its ID")
+	@Operation(summary = "Delete Tag", description = "Remove a specific tag from a SourceTable identified by its ID")
 	public ResponseEntity<String> removeTagFromSourceTable(@PathVariable("SourceTable_id") Long uid,
 			@PathVariable String tag) {
 		ResponseEntity<String> updatedSourceTable = dataSourceService.removeTagFromSourceTable(uid, tag);
@@ -64,7 +64,7 @@ public class DBDataSourceController {
 	}
 
 	@DeleteMapping("/column/{SourceColumn_id}/{tag}")
-	@Operation(summary = "Remove Tag from SourceColumn", description = "Remove a specific tag from a SourceColumn identified by its ID")
+	@Operation(summary = "Delete Tag", description = "Remove a specific tag from a SourceColumn identified by its ID")
 	public ResponseEntity<String> removeTagFromSourceColumn(@PathVariable("SourceColumn_id") Long uid,
 			@PathVariable String tag) {
 		ResponseEntity<String> updatedSourceColumn = dataSourceService.removeTagFromSourceColumn(uid, tag);

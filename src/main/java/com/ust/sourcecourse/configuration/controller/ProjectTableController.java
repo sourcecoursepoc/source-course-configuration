@@ -38,7 +38,7 @@ public class ProjectTableController {
 	 */
 
 	@PostMapping
-	@Operation(summary = "Create Project Table", description = "Create a project table with the provided request")
+	@Operation(summary = "Create ProjectTable", description = "Create a project table with the provided request")
 	public ResponseEntity<List<DBTable>> createProjectTable(@Valid @RequestBody ProjectTableRequest projTableReq) {
 		List<DBTable> dbTables = null;
 		try {
@@ -74,7 +74,7 @@ public class ProjectTableController {
 	 */
 
 	@DeleteMapping
-	@Operation(summary = "Delete Project Table", description = "Deletes a project table based on the provided projectUid and sourceTableUid")
+	@Operation(summary = "Delete ProjectTable", description = "Deletes a project table based on the provided projectUid and sourceTableUid")
 	public ResponseEntity<List<Long>> deleteProjectTable(@RequestBody ProjectTableRequest request) {
 		try {
 			List<Long> deleteTable = projectTableService.deleteProjectTable(request);

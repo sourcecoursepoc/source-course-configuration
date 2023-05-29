@@ -37,7 +37,7 @@ public class ProjectGroupController {
 	 */
 
 	@PostMapping
-	@Operation(summary = "Create Project Group", description = "Creates a new project group")
+	@Operation(summary = "Create ProjectGroup", description = "Creates a new project group")
 	public ResponseEntity<ProjectGroupResponse> createProjectGroup(
 			@Valid @RequestBody ProjectGroupRequest projectGroupRequest) {
 		ProjectGroupResponse projectGroupResponse = projectGroupService.createProjectGroup(projectGroupRequest);
