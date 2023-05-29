@@ -137,16 +137,13 @@ public class GroupPipelineService {
 	 * 
 	 * @param Delete by id
 	 */
-
 	 
 	  @Transactional
 	  public void deleteGroupPipeline(Long id) {
 	    GroupPipeline groupPipeline = groupPipelineRepository.findById(id)
 	      .orElseThrow(() -> new ResourceNotFoundException("Group pipeline not found with id " + id));
-	    
-	    ProjectGroup projectGroup = groupPipeline.getProjectGroup();
+	    	    ProjectGroup projectGroup = groupPipeline.getProjectGroup();
 	    projectGroup.setGroupPipeline(null);
-	    
-	    groupPipelineRepository.delete(groupPipeline);
+	    	    groupPipelineRepository.delete(groupPipeline);
 	  }
 }
