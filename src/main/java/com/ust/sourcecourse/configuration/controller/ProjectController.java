@@ -57,12 +57,14 @@ public class ProjectController {
 	}
 
 	@DeleteMapping("/{project_uid}")
+	@Operation(summary = "Delete Project", description = "Delete a project by project UID")
 	public ResponseEntity<String> deleteProject(@PathVariable("project_uid") Long uid) {
 		String message = projectService.deleteProject(uid);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(message);
 	}
 
 	@PutMapping("/{project_uid}")
+	@Operation(summary = "Update Project", description = "Update project data identified by project UID")
 	public ResponseEntity<ProjectInfo> updateProject(@PathVariable("project_uid") Long uid, @RequestBody ProjectData projectData) {
 		ProjectInfo projectInfo = projectService.updateProject(uid, projectData);
 		return ResponseEntity.ok(projectInfo);

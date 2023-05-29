@@ -51,6 +51,7 @@ public class ProjectGroupController {
 	 */
 
 	@GetMapping("/{groupId}")
+	@Operation(summary = "Get Project Group", description = "Get information about a specific project group identified by groupId")
 	public ResponseEntity<ProjectGroupResponse> getProjectGroup(@PathVariable("groupId") Long id) {
 		ProjectGroupResponse projectGroupResponse = projectGroupService.getProjectGroup(id);
 		return ResponseEntity.ok(projectGroupResponse);
