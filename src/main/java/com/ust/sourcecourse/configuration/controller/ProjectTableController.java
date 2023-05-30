@@ -57,7 +57,7 @@ public class ProjectTableController {
 	 * @param uid
 	 * @return
 	 */
-	@GetMapping("/{ProjectTable_id}")
+	@GetMapping("/{projectTableId}")
 	@Operation(summary = "Get Project Table", description = "Get project table data for a specific user identified by user ID")
 	public ResponseEntity<List<DBTable>> getProjectTable(@PathVariable("ProjectTable_id") Long uid) {
 		try {

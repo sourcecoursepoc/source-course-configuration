@@ -1,7 +1,5 @@
 package com.ust.sourcecourse.configuration.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -36,9 +34,9 @@ public class GroupPipelineController {
 	 */
 	@PostMapping("/{groupId}")
 	@Operation(summary = "Create Pipeline", description = "Create a pipeline for a specific group by groupId")
-	public ResponseEntity<List<GroupPipelineResponse>> createPipeline(@PathVariable("groupId") Long uid,
+	public ResponseEntity<GroupPipelineResponse> createPipeline(@PathVariable("groupId") Long uid,
 			@RequestBody GroupPipelineRequest groupPipelineRequest) throws HttpRequestMethodNotSupportedException {
-		List<GroupPipelineResponse> groupPipelineResponse = groupPipelineService.createGroupPipeline(uid,
+		GroupPipelineResponse groupPipelineResponse = groupPipelineService.createGroupPipeline(uid,
 				groupPipelineRequest);
 		return ResponseEntity.ok(groupPipelineResponse);
 	}
@@ -62,12 +60,13 @@ public class GroupPipelineController {
 	 * @param get pipeline by projectGroup uid
 	 * @return
 	 */
-	@GetMapping("/group/{projectGroup_id}")
+
+	@GetMapping("/group/{projectGroupId}")
 	@Operation(summary = "Get Pipelines by Project Group", description = "Retrieve pipelines for a specific group identified by group ID")
-	public ResponseEntity<List<GroupPipelineResponse>> PipelinebyProjectGroup(@PathVariable("pipeline_id") Long uid) {
-		List<GroupPipelineResponse> pipelines = groupPipelineService.findByProjectGroup(uid);
-		if (!pipelines.isEmpty()) {
-			return ResponseEntity.ok(pipelines);
+	public ResponseEntity<GroupPipelineResponse> PipelinebyProjectGroup(@PathVariable("projectGroupId") Long uid) {
+		GroupPipelineResponse pipelineResponse = groupPipelineService.findByProjectGroup(uid);
+		if (pipelineResponse != null) {
+			return ResponseEntity.ok(pipelineResponse);
 		} else {
 			return ResponseEntity.noContent().build();
 		}
@@ -79,9 +78,9 @@ public class GroupPipelineController {
 	 * @return
 	 */
 
-	@PutMapping("/{Pipeline_id}")
+	@PutMapping("/{pipelineId}")
 	@Operation(summary = "Update Group Pipeline", description = "Update group pipeline for a specific ID")
-	public ResponseEntity<GroupPipelineResponse> updateGroupPipeline(@PathVariable("Pipeline_id") Long id,
+	public ResponseEntity<GroupPipelineResponse> updateGroupPipeline(@PathVariable("pipelineId") Long id,
 			@RequestBody GroupPipelineRequest groupPipelineRequest) {
 		GroupPipelineResponse updatedGroupPipeline = groupPipelineService.updateGroupPipeline(id, groupPipelineRequest);
 		return ResponseEntity.ok(updatedGroupPipeline);
@@ -93,10 +92,11 @@ public class GroupPipelineController {
 	 * @return
 	 */
 
-	@DeleteMapping("/{pipeline_id}")
+	@DeleteMapping("/{pipelineId}")
 	@Operation(summary = "Delete Group Pipeline", description = "Delete a group pipeline by ID")
-	public ResponseEntity<Void> deleteGroupPipeline(@PathVariable("pipeline_id") Long id) {
+	public ResponseEntity<Void> deleteGroupPipeline(@PathVariable("pipelineId") Long id) {
 		groupPipelineService.deleteGroupPipeline(id);
 		return ResponseEntity.noContent().build();
 	}
+
 }

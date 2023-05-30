@@ -38,9 +38,9 @@ public class DBDataSourceController {
 		return ResponseEntity.status(HttpStatus.CREATED.value()).body(dataSourceService.saveDB(dbData));
 	}
 
-	@DeleteMapping("/{DataSource_uid}")
+	@DeleteMapping("/{dataSourceId}")
 	@Operation(summary = "Delete DB", description = "Delete a database identified by its DataSource ID")
-	public ResponseEntity<Void> deleteDB(@PathVariable("DataSource_uid") Long uid) {
+	public ResponseEntity<Void> deleteDB(@PathVariable("dataSourceId") Long uid) {
 		dataSourceService.deleteDB(uid);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).build();
 	}
@@ -51,9 +51,9 @@ public class DBDataSourceController {
 		return ResponseEntity.ok(dataSourceService.getDBInfo());
 	}
 
-	@DeleteMapping("/table/{SourceTable_id}/{tag}")
+	@DeleteMapping("/table/{sourceTableId}/{tag}")
 	@Operation(summary = "Delete Tag", description = "Remove a specific tag from a SourceTable identified by its ID")
-	public ResponseEntity<String> removeTagFromSourceTable(@PathVariable("SourceTable_id") Long uid,
+	public ResponseEntity<String> removeTagFromSourceTable(@PathVariable("sourceTableId") Long uid,
 			@PathVariable String tag) {
 		ResponseEntity<String> updatedSourceTable = dataSourceService.removeTagFromSourceTable(uid, tag);
 		if (updatedSourceTable != null) {
@@ -63,9 +63,9 @@ public class DBDataSourceController {
 		}
 	}
 
-	@DeleteMapping("/column/{SourceColumn_id}/{tag}")
+	@DeleteMapping("/column/{sourceColumnId}/{tag}")
 	@Operation(summary = "Delete Tag", description = "Remove a specific tag from a SourceColumn identified by its ID")
-	public ResponseEntity<String> removeTagFromSourceColumn(@PathVariable("SourceColumn_id") Long uid,
+	public ResponseEntity<String> removeTagFromSourceColumn(@PathVariable("sourceColumnId") Long uid,
 			@PathVariable String tag) {
 		ResponseEntity<String> updatedSourceColumn = dataSourceService.removeTagFromSourceColumn(uid, tag);
 		if (updatedSourceColumn != null) {
@@ -75,16 +75,16 @@ public class DBDataSourceController {
 		}
 	}
 
-	@GetMapping("/table/tags/{SourceTable_id}")
+	@GetMapping("/table/tags/{sourceTableId}")
 	@Operation(summary = "Get Tags by Source Table", description = "Retrieve tags for a specific source table identified by its ID")
-	public ResponseEntity<List<String>> getTagsBySourceTable(@PathVariable("SourceTable_id") Long uid) {
+	public ResponseEntity<List<String>> getTagsBySourceTable(@PathVariable("sourceTableId") Long uid) {
 		List<String> tags = dataSourceService.getTagsByTable(uid);
 		return ResponseEntity.ok(tags);
 	}
 
-	@GetMapping("/column/tags/{SourceColumn_id}")
+	@GetMapping("/column/tags/{sourceColumnId}")
 	@Operation(summary = "Get Tags by Source Column", description = "Retrieve tags for a specific source column identified by its ID")
-	public ResponseEntity<List<String>> getTagsBySourceColumn(@PathVariable("SourceColumn_id") Long uid) {
+	public ResponseEntity<List<String>> getTagsBySourceColumn(@PathVariable("sourceColumnId") Long uid) {
 		List<String> tags = dataSourceService.getTagsByColumn(uid);
 		return ResponseEntity.ok(tags);
 	}
@@ -103,18 +103,18 @@ public class DBDataSourceController {
 		return ResponseEntity.ok(groups);
 	}
 
-	@PostMapping("/column/{SourceColumn_id}")
+	@PostMapping("/column/{sourceColumnId}")
 	@Operation(summary = "Add Tag to Source Column", description = "Add a tag to a source column identified by its ID")
-	public ResponseEntity<List<String>> addTagToSourceColumn(@PathVariable("SourceColumn_id") Long uid,
+	public ResponseEntity<List<String>> addTagToSourceColumn(@PathVariable("sourceColumnId") Long uid,
 			@RequestBody TagDescriptionRequest request) {
 		List<String> updatedSourceColumn = dataSourceService.addTagSourceColumn(uid, request.getTags(),
 				request.getDescription());
 		return ResponseEntity.ok(updatedSourceColumn);
 	}
 
-	@PostMapping("/table/{SourceTable_id}")
+	@PostMapping("/table/{sourceTableId}")
 	@Operation(summary = "Add Tag to Source Table", description = "Add a tag to a source table identified by its ID")
-	public ResponseEntity<List<String>> addTagToSourceTable(@PathVariable("SourceTable_id") Long uid,
+	public ResponseEntity<List<String>> addTagToSourceTable(@PathVariable("sourceTableId") Long uid,
 			@RequestBody TagDescriptionRequest request) {
 		List<String> updatedSourceTable = dataSourceService.addTagSourceTable(uid, request.getTags(),
 				request.getDescription());

@@ -44,9 +44,9 @@ public class ProjectController {
 		return ResponseEntity.status(HttpStatus.CREATED.value()).body(projectInfo);
 	}
 
-	@GetMapping("/{project_uid}")
+	@GetMapping("/{projectId}")
 	@Operation(summary = "Get Project by ID", description = "Retrieve project information based on the provided ID")
-	public ResponseEntity<ProjectInfo> getProjectById(@PathVariable("project_uid") Long uid) {
+	public ResponseEntity<ProjectInfo> getProjectById(@PathVariable("projectId") Long uid) {
 		ProjectInfo projectInfo = projectService.getProjectById(uid);
 
 		if (projectInfo != null) {
@@ -56,16 +56,16 @@ public class ProjectController {
 		}
 	}
 
-	@DeleteMapping("/{project_uid}")
+	@DeleteMapping("/{projectId}")
 	@Operation(summary = "Delete Project", description = "Delete a project by project UID")
-	public ResponseEntity<String> deleteProject(@PathVariable("project_uid") Long uid) {
+	public ResponseEntity<String> deleteProject(@PathVariable("projectId") Long uid) {
 		String message = projectService.deleteProject(uid);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(message);
 	}
 
-	@PutMapping("/{project_uid}")
+	@PutMapping("/{projectId}")
 	@Operation(summary = "Update Project", description = "Update project data identified by project UID")
-	public ResponseEntity<ProjectInfo> updateProject(@PathVariable("project_uid") Long uid, @RequestBody ProjectData projectData) {
+	public ResponseEntity<ProjectInfo> updateProject(@PathVariable("projectId") Long uid, @RequestBody ProjectData projectData) {
 		ProjectInfo projectInfo = projectService.updateProject(uid, projectData);
 		return ResponseEntity.ok(projectInfo);
 	}
