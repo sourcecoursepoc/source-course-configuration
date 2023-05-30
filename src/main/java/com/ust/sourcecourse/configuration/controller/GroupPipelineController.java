@@ -1,7 +1,5 @@
 package com.ust.sourcecourse.configuration.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -18,82 +16,87 @@ import com.ust.sourcecourse.configuration.request.GroupPipelineRequest;
 import com.ust.sourcecourse.configuration.response.GroupPipelineResponse;
 import com.ust.sourcecourse.configuration.service.GroupPipelineService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/group-pipeline")
 public class GroupPipelineController {
 
+	@Autowired
+	private GroupPipelineService groupPipelineService;
 
-	
-	  @Autowired 
-	  private GroupPipelineService groupPipelineService;
-	
 	/**
 	 * 
 	 * @param uid
 	 * @param groupPipelineRequest
 	 * @return
-	 * @throws HttpRequestMethodNotSupportedException 
+	 * @throws HttpRequestMethodNotSupportedException
 	 */
-	  @PostMapping("/{groupId}")
-	    public ResponseEntity<List<GroupPipelineResponse>> createPipeline(@PathVariable("groupId")  Long uid,
-	            @RequestBody GroupPipelineRequest groupPipelineRequest) throws HttpRequestMethodNotSupportedException {
-	        List<GroupPipelineResponse> groupPipelineResponse = groupPipelineService.createGroupPipeline(uid,
-	                groupPipelineRequest);
-	        return ResponseEntity.ok(groupPipelineResponse);
-	    }
+	@PostMapping("/{groupId}")
+	@Operation(summary = "Create Pipeline", description = "Create a pipeline for a specific group by groupId")
+	public ResponseEntity<GroupPipelineResponse> createPipeline(@PathVariable("groupId") Long uid,
+			@RequestBody GroupPipelineRequest groupPipelineRequest) throws HttpRequestMethodNotSupportedException {
+		GroupPipelineResponse groupPipelineResponse = groupPipelineService.createGroupPipeline(uid,
+				groupPipelineRequest);
+		return ResponseEntity.ok(groupPipelineResponse);
+	}
 
-	 /**
-	  * 
-	  *
-	  * @param Get by pipeline id
-	  * @return
-	  */
+	/**
+	 * 
+	 *
+	 * @param Get by pipeline id
+	 * @return
+	 */
 
-		@GetMapping("/{pipelineId}")
-		public ResponseEntity<GroupPipelineResponse> getGroupPipeline(@PathVariable("pipelineId") Long id) {
-			GroupPipelineResponse groupPipelineResponse = groupPipelineService.getGroupPipeline(id);
-			return ResponseEntity.ok(groupPipelineResponse);
-		}
-		
-		/**
-		 * 
-		 * @param get pipeline by projectGroup uid
-		 * @return
-		 */
-		@GetMapping("/group/{id}")
-		public ResponseEntity<List<GroupPipelineResponse>> PipelinebyProjectGroup(@PathVariable("id") Long uid) {
-		    List<GroupPipelineResponse> pipelines = groupPipelineService.findByProjectGroup(uid);
-		    if (!pipelines.isEmpty()) {
-		        return ResponseEntity.ok(pipelines);
-		    } else {
-		        return ResponseEntity.noContent().build();
-		    }
-		}
+	@GetMapping("/{pipelineId}")
+	@Operation(summary = "Get Group Pipeline", description = "Retrieve a group pipeline by pipeline ID")
+	public ResponseEntity<GroupPipelineResponse> getGroupPipeline(@PathVariable("pipelineId") Long id) {
+		GroupPipelineResponse groupPipelineResponse = groupPipelineService.getGroupPipeline(id);
+		return ResponseEntity.ok(groupPipelineResponse);
+	}
 
-		
-		
-		/**
-		 * 
-		 * @param update by pipeline  id
-		 * @return
-		 */
-		
-		@PutMapping("/{id}")
-		public ResponseEntity<GroupPipelineResponse> updateGroupPipeline(@PathVariable("id") Long id,
-				@RequestBody GroupPipelineRequest groupPipelineRequest) {
-			GroupPipelineResponse updatedGroupPipeline = groupPipelineService.updateGroupPipeline(id, groupPipelineRequest);
-			return ResponseEntity.ok(updatedGroupPipeline);
-		}
-		
-		/**
-		 * 
-		 * @param delete by pipeline id
-		 * @return
-		 */
-		
-		@DeleteMapping("/{id}")
-		public ResponseEntity<Void> deleteGroupPipeline(@PathVariable("id") Long id) {
-			groupPipelineService.deleteGroupPipeline(id);
+	/**
+	 * 
+	 * @param get pipeline by projectGroup uid
+	 * @return
+	 */
+
+	@GetMapping("/group/{projectGroupId}")
+	@Operation(summary = "Get Pipelines by Project Group", description = "Retrieve pipelines for a specific group identified by group ID")
+	public ResponseEntity<GroupPipelineResponse> PipelinebyProjectGroup(@PathVariable("projectGroupId") Long uid) {
+		GroupPipelineResponse pipelineResponse = groupPipelineService.findByProjectGroup(uid);
+		if (pipelineResponse != null) {
+			return ResponseEntity.ok(pipelineResponse);
+		} else {
 			return ResponseEntity.noContent().build();
-			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param update by pipeline id
+	 * @return
+	 */
+
+	@PutMapping("/{pipelineId}")
+	@Operation(summary = "Update Group Pipeline", description = "Update group pipeline for a specific ID")
+	public ResponseEntity<GroupPipelineResponse> updateGroupPipeline(@PathVariable("pipelineId") Long id,
+			@RequestBody GroupPipelineRequest groupPipelineRequest) {
+		GroupPipelineResponse updatedGroupPipeline = groupPipelineService.updateGroupPipeline(id, groupPipelineRequest);
+		return ResponseEntity.ok(updatedGroupPipeline);
+	}
+
+	/**
+	 * 
+	 * @param delete by pipeline id
+	 * @return
+	 */
+
+	@DeleteMapping("/{pipelineId}")
+	@Operation(summary = "Delete Group Pipeline", description = "Delete a group pipeline by ID")
+	public ResponseEntity<Void> deleteGroupPipeline(@PathVariable("pipelineId") Long id) {
+		groupPipelineService.deleteGroupPipeline(id);
+		return ResponseEntity.noContent().build();
+	}
+
 }
