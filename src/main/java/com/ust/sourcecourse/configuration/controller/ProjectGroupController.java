@@ -64,7 +64,7 @@ public class ProjectGroupController {
 	 */
 
 	@GetMapping("/project/{projectId}")
-	@Operation(summary = "Get Project Group", description = "Get project group data for a specific group identified by groupId")
+	@Operation(summary = "Get Project Group", description = "Get project group data for a specific group identified by projectId")
 	public ResponseEntity<List<ProjectGroupResponse>> getProjectGroupsByProjectUid(
 			@PathVariable("projectId") Long uid) {
 		List<ProjectGroupResponse> projectGroups = projectGroupService.findByProjectUid(uid);

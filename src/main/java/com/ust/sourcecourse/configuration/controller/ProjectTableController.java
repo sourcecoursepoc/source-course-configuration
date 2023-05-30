@@ -38,7 +38,7 @@ public class ProjectTableController {
 	 */
 
 	@PostMapping
-	@Operation(summary = "Create ProjectTable", description = "Create a project table with the provided request")
+	@Operation(summary = "Map Tables to Project", description = "Map source tables to project by passing source table Ids")
 	public ResponseEntity<List<DBTable>> createProjectTable(@Valid @RequestBody ProjectTableRequest projTableReq) {
 		List<DBTable> dbTables = null;
 		try {
@@ -57,9 +57,9 @@ public class ProjectTableController {
 	 * @param uid
 	 * @return
 	 */
-	@GetMapping("/{projectTableId}")
+	@GetMapping("/{projectId}")
 	@Operation(summary = "Get Project Table", description = "Get project table data for a specific user identified by user ID")
-	public ResponseEntity<List<DBTable>> getProjectTable(@PathVariable("ProjectTable_id") Long uid) {
+	public ResponseEntity<List<DBTable>> getProjectTable(@PathVariable("projectId") Long uid) {
 		try {
 			List<DBTable> projInfo = projectTableService.getProjectTables(uid);
 			return ResponseEntity.ok(projInfo);
