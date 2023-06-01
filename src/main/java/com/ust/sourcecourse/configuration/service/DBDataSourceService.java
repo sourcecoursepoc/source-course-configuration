@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.ust.sourcecourse.configuration.entity.ConnectionInfo;
@@ -29,7 +30,6 @@ import com.ust.sourcecourse.configuration.response.DBTableColumn;
 import com.ust.sourcecourse.configuration.response.DBTableColumnMetadata;
 import com.ust.sourcecourse.configuration.response.DBTableMetadata;
 
-import jakarta.transaction.Transactional;
 
 @Service
 public class DBDataSourceService {
@@ -41,6 +41,9 @@ public class DBDataSourceService {
 	@Autowired
 	private SourceTableRepository sourceTableRepository;
 
+	@Autowired
+	KafkaProducerService kafProducerServicel;
+	
 	@Transactional
 	public DBDataSourceInfo saveDB(DBData dbData) {
 		ConnectionInfo connectionInfo = ConnectionInfo.builder().connectionURL(dbData.getConnectionURL())
@@ -49,6 +52,9 @@ public class DBDataSourceService {
 				.connectionInfo(connectionInfo).build();
 		connectionInfo.setDataSource(dataSource);
 		dataSource = dataSourceRepository.save(dataSource);
+		
+		kafProducerServicel.producer(dataSource.getUid());
+		
 		return getDBDataSource(dataSource);
 	}
 
@@ -168,13 +174,12 @@ public class DBDataSourceService {
 			throw new IllegalArgumentException("Both Tags and description must not be empty");
 		}
 
-		List<String> tagList = sourceTable.getTags();
-		if (tagList == null) {
-			tagList = new ArrayList<>();
+		
+		List<String> tagList = new ArrayList<>();
+		if (tags != null) {
+			tagList.addAll(tags);
 		}
-		if(tags!=null) {
-		tagList.addAll(tags);
-		}
+
 		Set<String> tagSet = new LinkedHashSet<>(tagList);
 		sourceTable.setTags(new ArrayList<>(tagSet));
 
@@ -191,10 +196,8 @@ public class DBDataSourceService {
 		if (description == null && tags == null) {
 			throw new IllegalArgumentException("Both Tags and description must not be empty");
 		}
-		List<String> tagList = sourceColumn.getTags();
-		if (tagList == null) {
-			tagList = new ArrayList<>();
-		}
+		
+		List<String> tagList = new ArrayList<>();
 		if (tags != null) {
 			tagList.addAll(tags);
 		}
