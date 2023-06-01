@@ -12,13 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ust.sourcecourse.configuration.entity.GroupPipeline;
-import com.ust.sourcecourse.configuration.entity.ProjectGroup;
 import com.ust.sourcecourse.configuration.request.GroupPipelineRequest;
 import com.ust.sourcecourse.configuration.response.GroupPipelineResponse;
 import com.ust.sourcecourse.configuration.service.GroupPipelineService;
-
-import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/group-pipeline")
@@ -88,17 +84,11 @@ public class GroupPipelineController {
 	 * @param delete by pipeline id
 	 * @return
 	 */
-	 @DeleteMapping("/{id}")
-	  public ResponseEntity<String> deleteGroupPipeline(@PathVariable Long id) {
+	 @DeleteMapping("/{pipelineId}")
+	  public ResponseEntity<String> deleteGroupPipeline(@PathVariable("pipelineId") Long id) {
 	    groupPipelineService.deleteGroupPipeline(id);
 	    return ResponseEntity.ok("Group pipeline deleted successfully.");
 	  }
 
-	/*
-	 * @DeleteMapping("/{pipelineId}") public ResponseEntity<Void>
-	 * deleteGroupPipeline(@PathVariable("pipelineId") Long id) {
-	 * groupPipelineService.deleteGroupPipeline(id); return
-	 * ResponseEntity.noContent().build(); }
-	 */
 
 }
