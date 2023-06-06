@@ -15,10 +15,10 @@ public class DBData {
 	@NotBlank
 	private String connectionURL;
 
-	@NotBlank
+//	@NotBlank
 	private String username;
 
-	@NotBlank
+//	@NotBlank
 	private String password;
 
 }
