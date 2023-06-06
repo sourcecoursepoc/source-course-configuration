@@ -95,6 +95,7 @@ public class GroupPipelineController {
 	 */
 
 	@DeleteMapping("/{pipelineId}")
+	@Operation(summary = "Delete Group Pipeline", description = "Delete a group pipeline by ID")
 	public ResponseEntity<String> deleteGroupPipeline(@PathVariable("pipelineId") Long id) {
 		groupPipelineService.deleteGroupPipeline(id);
 		return ResponseEntity.ok("Group pipeline deleted successfully.");
