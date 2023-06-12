@@ -10,7 +10,7 @@ import com.ust.sourcecourse.configuration.entity.SourceTable;
 
 public interface SourceTableRepository extends JpaRepository<SourceTable, Long> {
 
-	@Query("SELECT st FROM SourceTable st JOIN st.tags t WHERE t = LOWER(:tag)")
+	@Query("SELECT st FROM SourceTable st JOIN st.tags t WHERE LOWER(t) = LOWER(:tag)")
 	List<SourceTable> retrieveByTag(@Param("tag") String tag);
 
 }
