@@ -45,7 +45,7 @@ public class DBDataSourceService {
 
 	@Autowired
 	KafkaProducerService kafProducerServicel;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -94,8 +94,8 @@ public class DBDataSourceService {
 				.yoyCount(sourceTable.getYoyCount()).rowCount(sourceTable.getRowCount()).size(sourceTable.getSize())
 				.build();
 		List<DBTableColumn> dbTableColumns = sourceTable.getSourceColumns().stream()
-				.map(sourceColumn -> getDBTableColumn1(sourceColumn)).toList();
-		
+				.map(sourceColumn -> getDBTableColumn(sourceColumn)).toList();
+
 		String json = sourceTable.getSampleData();
 		JsonNode jsonNode = null;
 		try {
@@ -103,13 +103,13 @@ public class DBDataSourceService {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		
+
 		return DBTable.builder().uid(sourceTable.getUid()).tableName(sourceTable.getName())
 				.description(sourceTable.getDescription()).metadata(metadata).tags(sourceTable.getTags())
 				.sampleData(jsonNode).columns(dbTableColumns).build();
 	}
 
-	private DBTableColumn getDBTableColumn1(SourceColumn sourceColumn) {
+	private DBTableColumn getDBTableColumn(SourceColumn sourceColumn) {
 		DBTableColumnMetadata metadata = DBTableColumnMetadata.builder().type(sourceColumn.getType())
 				.isPrimary(sourceColumn.isPrimary()).isNullable(sourceColumn.isNullable())
 				.isUnique(sourceColumn.isUnique()).defaultValue(sourceColumn.getDefaultValue()).build();
@@ -177,7 +177,7 @@ public class DBDataSourceService {
 		if (sourceColumns.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No tables found with the given tag.");
 		}
-		return sourceColumns.stream().map(SourceColumn -> getDBTableColumn1(SourceColumn)).collect(Collectors.toList());
+		return sourceColumns.stream().map(SourceColumn -> getDBTableColumn(SourceColumn)).collect(Collectors.toList());
 
 	}
 
@@ -216,24 +216,8 @@ public class DBDataSourceService {
 		}
 		Set<String> tagSet = new LinkedHashSet<>(tagList);
 		sourceColumn.setTags(new ArrayList<>(tagSet));
-
 		sourceColumn.setDescription(description); // Set the description
-
 		sourceColumnRepository.save(sourceColumn);
-
 		return sourceColumn.getTags();
 	}
-
-	public List<DBTableColumn> searchColumnsByTag1(String tag) {
-		List<SourceColumn> columns = sourceColumnRepository.findAll();
-		return columns.stream().filter(column -> column.getTags() != null && column.getTags().contains(tag))
-				.map(column -> getDBTableColumn1(column)).collect(Collectors.toList());
-	}
-
-	public List<DBTable> searchTablesByTag1(String tag) {
-		List<SourceTable> tables = sourceTableRepository.findAll();
-		return tables.stream().filter(table -> table.getTags() != null && table.getTags().contains(tag))
-				.map(table -> getDBTable(table)).collect(Collectors.toList());
-	}
-
 }
