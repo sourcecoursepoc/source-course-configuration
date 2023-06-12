@@ -44,7 +44,7 @@ public class DBDataSourceService {
 	private SourceTableRepository sourceTableRepository;
 
 	@Autowired
-	KafkaProducerService kafProducerServicel;
+	KafkaProducerService kafProducerService;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -58,7 +58,7 @@ public class DBDataSourceService {
 		connectionInfo.setDataSource(dataSource);
 		dataSource = dataSourceRepository.save(dataSource);
 
-		kafProducerServicel.producer(dataSource.getUid());
+		kafProducerService.producer(dataSource.getUid());
 
 		return getDBDataSource(dataSource);
 	}
