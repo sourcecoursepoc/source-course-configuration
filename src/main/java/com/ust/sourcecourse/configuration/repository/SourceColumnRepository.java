@@ -10,6 +10,6 @@ import com.ust.sourcecourse.configuration.entity.SourceColumn;
 
 public interface SourceColumnRepository extends JpaRepository<SourceColumn, Long> {
 
-	@Query("SELECT sc FROM SourceColumn sc JOIN sc.tags c WHERE c = LOWER(:tag)")
+	@Query("SELECT sc FROM SourceColumn sc JOIN sc.tags c WHERE LOWER(c) = LOWER(:tag)")
 	List<SourceColumn> retrieveByTag(@Param("tag") String tag);
 }

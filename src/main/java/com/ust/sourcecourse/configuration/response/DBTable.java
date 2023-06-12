@@ -2,6 +2,8 @@ package com.ust.sourcecourse.configuration.response;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,5 +17,6 @@ public class DBTable {
 	private DBTableMetadata metadata;
 	private List<String> tags;
 	private List<DBTableColumn> columns;
+	private JsonNode sampleData;
 }
 

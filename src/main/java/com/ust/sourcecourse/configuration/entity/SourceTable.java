@@ -1,16 +1,18 @@
 
 package com.ust.sourcecourse.configuration.entity;
 
-
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
+
+import com.vladmihalcea.hibernate.type.json.JsonNodeStringType;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -22,6 +24,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +37,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class SourceTable {
 
 	@Id
@@ -90,9 +92,14 @@ public class SourceTable {
 	private LocalDateTime modifiedTimestamp;
 
 	@OneToMany(mappedBy = "sourceTable", cascade = CascadeType.ALL)
+	@OrderBy("uid")
 	private List<SourceColumn> sourceColumns;
 
 	@OneToMany(mappedBy = "sourceTable")
 	private List<ProjectTable> projectTables;
+
+	@Column(name = "sample_data", columnDefinition = "json")
+	@Type(JsonType.class)
+	private String sampleData;
 
 }

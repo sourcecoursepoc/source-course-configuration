@@ -121,11 +121,4 @@ public class DBDataSourceController {
 		return ResponseEntity.ok(updatedSourceTable);
 	}
 
-	@GetMapping("/searchByTag/{tag}")
-	@Operation(summary = "Get Data", description = "Get data for a Table identified by tag")
-	public ResponseEntity<List<DBTable>> searchTablesByTag1(@PathVariable String tag) {
-		List<DBTable> tables = dataSourceService.searchTablesByTag(tag);
-		return ResponseEntity.ok(tables);
-	}
-
 }
