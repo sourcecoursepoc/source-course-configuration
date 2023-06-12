@@ -156,7 +156,6 @@ public class DBDataSourceService {
 	}
 
 	public List<DBTable> searchTablesByTag(String tag) {
-
 		List<SourceTable> sourceTables = new ArrayList<>();
 		if (StringUtils.isNotBlank(tag)) {
 			sourceTables = sourceTableRepository.retrieveByTag(tag.toLowerCase());

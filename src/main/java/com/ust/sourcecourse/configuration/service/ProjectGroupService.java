@@ -5,8 +5,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +63,8 @@ public class ProjectGroupService {
 	public List<ProjectGroupResponse> findByProjectUid(Long uid) {
 		List<ProjectGroup> projectGroups = projectGroupRepository.findByProjectUid(uid);
 		if (projectGroups.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Project groups not found for project UID: " + uid);
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT,
+					"Project groups not found for project UID: " + uid);
 		}
 		return projectGroups.stream().map(projectGroup -> getProjectGroupresponse(projectGroup)).toList();
 	}
@@ -116,19 +117,19 @@ public class ProjectGroupService {
 			projectGroupRepository.delete(existingProjectGroup.get());
 			return true;
 		} else {
-			 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project group not found with UID: " + uid);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project group not found with UID: " + uid);
 		}
 	}
 
 	/**
 	 * 
 	 * @param Add tags
-	 * @return 
+	 * @return
 	 */
 
 	public List<String> addTagToProjectGroup(Long uid, List<String> tags) {
-		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("ProjectGroup with the given Id not found", "id", uid));
+		ProjectGroup projectGroup = projectGroupRepository.findById(uid).orElseThrow(
+				() -> new ResourceNotFoundException("ProjectGroup with the given Id not found", "id", uid));
 		List<String> tag = projectGroup.getTags();
 		if (tag == null) {
 			tag = new ArrayList<>();
@@ -166,8 +167,8 @@ public class ProjectGroupService {
 	 */
 
 	public List<String> getTagsByGroup(Long uid) {
-		ProjectGroup projectGroup = projectGroupRepository.findById(uid)
-				.orElseThrow(() -> new ResourceNotFoundException("ProjectGroup Id with " +uid +" not found", "id", uid));
+		ProjectGroup projectGroup = projectGroupRepository.findById(uid).orElseThrow(
+				() -> new ResourceNotFoundException("ProjectGroup Id with " + uid + " not found", "id", uid));
 		return projectGroup.getTags();
 	}
 
@@ -176,15 +177,17 @@ public class ProjectGroupService {
 	 * @param search Groups By Tag
 	 * @return
 	 */
-
 	public List<ProjectGroupResponse> searchGroupsByTag(String tag) {
-		List<ProjectGroup> groups = projectGroupRepository.findAll();
-		List<ProjectGroupResponse> matchingGroups= groups.stream().filter(group -> group.getTags() != null && group.getTags().contains(tag))
-				.map(group -> getProjectGroupresponse(group)).collect(Collectors.toList());
-		if (matchingGroups.isEmpty()) {
-	        throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No project groups found with tag: " + tag);
-	    }
-	    return matchingGroups;
+		List<ProjectGroup> groups = new ArrayList<>();
+		if (StringUtils.isNotBlank(tag)) {
+			groups = projectGroupRepository.retrieveByTag(tag.toLowerCase());
+		}
+		if (groups.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No project groups found with tag: " + tag);
+		}
+		List<ProjectGroupResponse> matchingGroups = groups.stream().map(group -> getProjectGroupresponse(group))
+				.toList();
+		return matchingGroups;
 	}
 
 }
